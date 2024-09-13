@@ -1,14 +1,19 @@
-import { Card } from 'antd';
-import Meta from 'antd/es/card/Meta';
-import React from 'react'
-import { StyleNameProduct } from './style';
+import { Card } from "antd";
+import Meta from "antd/es/card/Meta";
+import React from "react";
+import {
+  StyleNameProduct,
+  WrapperCardStyle,
+  WrapperPriceText,
+  WrapperTimePostText,
+} from "./style";
 
 const CardComponent = () => {
   return (
-    <Card
+    <WrapperCardStyle
       hoverable
-      style={{ width: 240 }}
-      bodyStyle={{padding:'10px'}}
+      style={{ width: 200, padding: "12px" }}
+      bodyStyle={{ padding: "10px" }}
       cover={
         <img
           alt="example"
@@ -16,11 +21,11 @@ const CardComponent = () => {
         />
       }
     >
-      <StyleNameProduct >
-        iphone
-      </StyleNameProduct>
-    </Card>
+      <StyleNameProduct>iphone</StyleNameProduct>
+      <WrapperPriceText>250.000 đ</WrapperPriceText>
+      <WrapperTimePostText>1p truoc</WrapperTimePostText>
+    </WrapperCardStyle>
   );
-}
+};
 
-export default CardComponent
+export default CardComponent;

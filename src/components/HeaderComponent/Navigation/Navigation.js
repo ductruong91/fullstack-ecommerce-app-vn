@@ -5,7 +5,7 @@ import { WrapperTypeProduct } from "../../../pages/HomePage/style";
 import TypeProduct from "../../TypeProduct/TypeProduct";
 
 const Navigation = () => {
-  const arr = ["xe", "do dien lanh", "laptop"];
+  const arr = ["xe", "do dien lanh", "laptop", "đồ dùng học tập", "thú cưng", "thời trang", "đồ nội thất"];
   return (
     <div style={{ padding: "0 120px" }}>
       <WrapperTypeProduct>
