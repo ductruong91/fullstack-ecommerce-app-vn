@@ -2,8 +2,10 @@ import { Col } from "antd";
 import React from "react";
 import {
   WrappeHeader,
+  WrapperHeaderAccount,
   WrapperIconAccount,
   WrapperIconCart,
+  WrapperListPostsIcon,
   WrapperTextHeader,
 } from "./style";
 import { AudioOutlined } from "@ant-design/icons";
@@ -17,29 +19,16 @@ import ButtonInputSearch from "../ButtonInputSearch/ButtonInputSearch";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import { BsFileEarmarkPostFill } from "react-icons/bs";
 import Navigation from "./Navigation/Navigation";
+import { FaListAlt } from "react-icons/fa";
 
-// const { Search } = Input;
-// const suffix = (
-//   <AudioOutlined
-//     style={{
-//       fontSize: 16,
-//       color: "#1677ff",
-//     }}
-//   />
-// );
 const onSearch = (value, _e, info) => console.log(info?.source, value);
 
 const HeaderComponent = () => {
   return (
     <div>
-      <WrappeHeader gutter={100}>
-        <Col span={6}>
+      <WrappeHeader gutter={10}>
+        <Col span={4}>
           <WrapperTextHeader>bkE</WrapperTextHeader>
-          {/* <div className="container">
-            <div>
-
-            </div>
-          </div> */}
         </Col>
 
         <Col span={12}>
@@ -53,17 +42,34 @@ const HeaderComponent = () => {
 
         <Col
           span={6}
-          style={{ display: "flex", gap: "10px", alignItems: "center" }}
+          style={{ display: "flex", gap: "20px", alignItems: "center" }}
         >
-          <WrapperIconAccount>
-            <AccountCircleIcon style={{ fontSize: "40px" }} />
-          </WrapperIconAccount>
-
           <div>
             <WrapperIconCart>
               <LocalMallIcon style={{ fontSize: "40px" }} />
             </WrapperIconCart>
           </div>
+
+          <WrapperHeaderAccount>
+            <div>
+              <WrapperIconAccount>
+                <AccountCircleIcon style={{ fontSize: "40px" }} />
+              </WrapperIconAccount>
+            </div>
+            <div>
+              <span> đăng nhập</span>
+            </div>
+          </WrapperHeaderAccount>
+
+          <WrapperListPostsIcon>
+              <div>
+                <FaListAlt size="40px" />
+              </div>
+              <div>
+                <span>quan li bai dang</span>
+              </div>
+          </WrapperListPostsIcon>
+
           <div>
             <ButtonComponent
               size="large"
@@ -78,9 +84,37 @@ const HeaderComponent = () => {
           </div>
         </Col>
       </WrappeHeader>
-      <Navigation/>
+      <Navigation />
     </div>
   );
 };
 
 export default HeaderComponent;
+
+// import React from "react";
+// import { Link } from "react-router-dom";
+
+// const Header = () => {
+//   return (
+//     <header>
+//       <div className="logo">
+//         <h1>My Ecommerce</h1>
+//       </div>
+//       <nav>
+//         <ul>
+//           <li>
+//             <Link to="/">Home</Link>
+//           </li>
+//           <li>
+//             <Link to="/login">Login</Link>
+//           </li>
+//           <li>
+//             <Link to="/cart">Cart</Link>
+//           </li>
+//         </ul>
+//       </nav>
+//     </header>
+//   );
+// };
+
+// export default Header;

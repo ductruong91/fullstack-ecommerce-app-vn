@@ -9,7 +9,7 @@ const Navigation = () => {
   return (
     <div style={{ padding: "0 120px" }}>
       <WrapperTypeProduct>
-        <ButtonComponent
+        <ButtonComponent  
           size="large"
           icon=<IoIosList />
           styleButton={{
