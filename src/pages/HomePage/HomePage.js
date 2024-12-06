@@ -1,7 +1,12 @@
 import React from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import Item from "antd/es/list/Item";
-import { WrapperNew, WrapperNewText, WrapperTypeProduct } from "./style";
+import {
+  WrapperNew,
+  WrapperNewText,
+  WrapperProduct,
+  WrapperTypeProduct,
+} from "./style";
 import { IoIosList } from "react-icons/io";
 import { FaAngleDown } from "react-icons/fa";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
@@ -32,14 +37,7 @@ const HomePage = () => {
           <span>Tin dang moi</span>
         </WrapperNewText>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "20px",
-            flexWrap: "wrap",
-          }}
-        >
+        <WrapperProduct>
           <CardComponent />
           <CardComponent />
           <CardComponent />
@@ -50,9 +48,7 @@ const HomePage = () => {
           <CardComponent />
           <CardComponent />
           <CardComponent />
-          <CardComponent />
-          <CardComponent />
-        </div>
+        </WrapperProduct>
         <div
           style={{ display: "flex", margin: "10px", justifyContent: "center" }}
         >

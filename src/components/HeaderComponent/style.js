@@ -21,15 +21,19 @@ export const WrapperIconAccount = styled.div`
 
 export const WrapperIconCart = styled.div`
   display: flex;
-  ${'' /* gap: 20px; */}
+  align-items: center;
+  ${'' /* margin-right: 20px; */}
+  ${"" /* gap: 20px; */}
 `;
 
 export const WrapperHeaderAccount = styled.div`
   display: flex;
   align-items: center;
+  ${'' /* margin-right: 20px; */}
 `;
 
 export const WrapperListPostsIcon = styled.div`
   display: flex;
   align-items: center;
+  ${'' /* margin-right: 30px; */}
 `;

@@ -20,14 +20,6 @@ const NavbarComponent = () => {
           return (
             <div>
               <WrapperButtonNavbar>
-                {/* <img
-                  src={iconXeCo}
-                  style={{
-                    width: "auto",
-                    height: "32px",
-                    objectfit: "contain",
-                  }}
-                /> */}
                 <WrapperTextButtonNavbar>{option}</WrapperTextButtonNavbar>
               </WrapperButtonNavbar>
             </div>

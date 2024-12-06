@@ -21,7 +21,7 @@ export const WrapperNavbar = styled.div`
   margin: 0px 0px 16px; */
   }
   padding: 12px 8px;
-  border: 1px solid red;
+  ${'' /* border: 1px solid red; */}
 `;
 export const WrapperButtonNavbar = styled.div`
   backgroundcolor: rgb(243, 244, 247);

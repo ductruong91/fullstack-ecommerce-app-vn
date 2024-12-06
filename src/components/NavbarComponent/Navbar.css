@@ -1,0 +1,61 @@
+/* Reset some basic styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Navbar Container */
+.navbar {
+  background-color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column; /* Stack the categories and price range vertically */
+  gap: 20px;
+}
+
+/* Categories Section */
+.categories {
+  display: flex; /* Arrange category buttons in a row */
+  gap: 15px;
+  justify-content: flex-start;
+}
+
+/* Category Button */
+.category-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #f4f4f4;  /* Light gray background */
+  border: 1px solid #ddd;  /* Light border */
+  border-radius: 25px;  /* Rounded corners */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.category-btn:hover {
+  background-color: #4CAF50; /* Change background on hover */
+  color: white;  /* Change text color on hover */
+}
+
+/* Price Range Section */
+.price-range {
+  display: flex;
+  flex-direction: column;  /* Stack price range buttons vertically */
+  gap: 10px;
+}
+
+/* Price Range Button */
+.price-btn {
+  padding: 12px 25px;
+  font-size: 16px;
+  background-color: #f0f0f0; /* Light gray background */
+  border: 1px solid #ddd;  /* Light border */
+  border-radius: 20px;  /* Rounded corners */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.price-btn:hover {
+  background-color: #808080; /* Dark gray background on hover */
+  color: white;  /* White text color on hover */
+}

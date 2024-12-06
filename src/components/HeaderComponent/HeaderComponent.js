@@ -1,4 +1,4 @@
-import { Col } from "antd";
+import { Badge, Col } from "antd";
 import React from "react";
 import {
   WrappeHeader,
@@ -46,7 +46,13 @@ const HeaderComponent = () => {
         >
           <div>
             <WrapperIconCart>
+            <Badge count = {4}>
               <LocalMallIcon style={{ fontSize: "40px" }} />
+            </Badge>
+              
+              <div>
+                <span style={{ whiteSpace: "nowrap" }}> gio hang</span>
+              </div>
             </WrapperIconCart>
           </div>
 
@@ -57,17 +63,17 @@ const HeaderComponent = () => {
               </WrapperIconAccount>
             </div>
             <div>
-              <span> đăng nhập</span>
+              <span style={{ whiteSpace: "nowrap" }}> đăng nhập</span>
             </div>
           </WrapperHeaderAccount>
 
           <WrapperListPostsIcon>
-              <div>
-                <FaListAlt size="40px" />
-              </div>
-              <div>
-                <span>quan li bai dang</span>
-              </div>
+            <div>
+              <FaListAlt size="40px" />
+            </div>
+            <div>
+              <span style={{ whiteSpace: "nowrap" }}>quan li bai dang</span>
+            </div>
           </WrapperListPostsIcon>
 
           <div>

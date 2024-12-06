@@ -24,3 +24,11 @@ export const WrapperNewText = styled.div`
   letter-spacing: normal;
   color: rgb(34, 34, 34);
 `;
+
+export const WrapperProduct = styled.div`
+display: flex;
+justifyContent: center;
+gap: 15px;
+margin-top: 20px;
+flex-wrap: wrap;
+`;

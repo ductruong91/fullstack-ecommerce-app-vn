@@ -37,5 +37,46 @@
   }
 }
 
-/* .headerWrapper .header{width: 100%; height: auto; padding: 25px 0px;}
-.logoWrapper img{ width: 100%;} */
+/* Nền footer màu đen, chữ trắng */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: black; /* Nền footer màu đen */
+  color: white; /* Chữ màu trắng */
+  align-items: center; /* Căn giữa các cột theo chiều dọc */
+}
+
+.footer-column {
+  display: flex;
+  flex: 1;
+  margin: 0 20px;
+}
+
+.footer-column h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: bold; /* Đậm cho tiêu đề */
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-icon {
+  color: white; /* Màu trắng cho biểu tượng */
+  transition: opacity 0.3s;
+}
+
+.social-icon:hover {
+  opacity: 0.7; /* Hiệu ứng mờ khi di chuột qua */
+}
+
+.footer-column p {
+  font-size: 16px;
+}
+
+.footer a {
+  text-decoration: none;
+}
