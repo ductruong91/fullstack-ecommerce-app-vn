@@ -4,7 +4,7 @@ import OrderPage from "../pages/OrderPage/OrderPage";
 import ProductDetailPage from "../pages/ProductDetailPage/ProductDetailPage";
 import ProductPage from "../pages/ProductPage/ProductPage";
 import SignUpPage from "../pages/SignUpPage/SignUpPage";
-import SignInPage from "../pages/TypeProductPage/SignInPage/SignInPage";
+import SignInPage from "../pages/SignInPage/SignInPage";
 import TypeProductPage from "../pages/TypeProductPage/TypeProductPage";
 
 export const routes = [
