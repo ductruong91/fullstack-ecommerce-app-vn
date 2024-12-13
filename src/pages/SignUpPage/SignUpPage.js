@@ -1,9 +1,99 @@
-import React from 'react'
+import React from "react";
+import {
+  WrapperContainerLogin,
+  WrapperSignInButton,
+  WrapperTexSignIn,
+} from "./style";
+import { FaFacebook } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
+import { TextField } from "@mui/material";
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 
 const SignUpPage = () => {
   return (
-    <div>SignUpPage</div>
-  )
-}
+    <div
+      style={{
+        display: "flex",
+        padding: "20px",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#ccc",
+        height: "100vh",
+      }}
+    >
+      <WrapperContainerLogin>
+        <WrapperTexSignIn>signin</WrapperTexSignIn>
+        <div
+          style={{
+            display: "flex",
+            gap: "20px",
+            justifyContent: "center",
+            fontSize: "30px",
+            marginBottom: "20px",
+          }}
+        >
+          <FaFacebook />
+          <FcGoogle />
+        </div>
+        <div style={{ paddingTop: " 20px" }}>
+          <TextField
+            id="outlined-basic"
+            label="tai khoan"
+            variant="outlined"
+            style={{ width: "100%" }}
+          />
+        </div>
+        <div style={{ paddingTop: " 20px" }}>
+          <TextField
+            id="outlined-basic"
+            label="mat khau"
+            variant="outlined"
+            style={{ width: "100%" }}
+          />
+        </div>
 
-export default SignUpPage
+        <div style={{ paddingTop: " 20px" }}>
+          <TextField
+            id="outlined-basic"
+            label="confirm mat khau"
+            variant="outlined"
+            style={{ width: "100%" }}
+          />
+        </div>
+
+        <WrapperSignInButton>
+          <ButtonComponent
+            size={40}
+            styleButton={{
+              background: "rgb(255,57,69)",
+              height: "48px",
+              width: "220px",
+              borderRadius: "4px",
+            }}
+            textButton={"Sign up"}
+            styleTextButton={{
+              color: "#fff",
+              fontSize: "20px",
+              fontWeight: "500",
+            }}
+          ></ButtonComponent>
+        </WrapperSignInButton>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              color: "blue",
+              cursor: "pointer",
+              fontSize: "16px",
+            }}
+          >
+            Đăng nhập
+          </button>
+        </div>
+      </WrapperContainerLogin>
+    </div>
+  );
+};
+
+export default SignUpPage;

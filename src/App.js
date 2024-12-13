@@ -23,6 +23,7 @@ function App() {
                 element={
                   <Layout>
                     <Page />
+                    {route.isShowHeader && <FooterComponent />}
                   </Layout>
                 }
               />
@@ -30,8 +31,6 @@ function App() {
           })}
         </Routes>
       </Router>
-
-      <FooterComponent />
     </div>
   );
 }

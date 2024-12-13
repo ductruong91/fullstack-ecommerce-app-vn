@@ -25,13 +25,13 @@ const onSearch = (value, _e, info) => console.log(info?.source, value);
 
 const HeaderComponent = () => {
   return (
-    <div>
+    <div >
       <WrappeHeader gutter={10}>
-        <Col span={4}>
+        <Col span={5}>
           <WrapperTextHeader>bkE</WrapperTextHeader>
         </Col>
 
-        <Col span={12}>
+        <Col span={11}>
           <ButtonInputSearch
             size="large"
             placeholder="input"
