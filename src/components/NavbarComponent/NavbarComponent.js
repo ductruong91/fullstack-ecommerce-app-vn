@@ -19,7 +19,7 @@ const NavbarComponent = () => {
         return option.map((option) => {
           return (
             <div>
-              <WrapperButtonNavbar>
+              <WrapperButtonNavbar key={option.id}>
                 <WrapperTextButtonNavbar>{option}</WrapperTextButtonNavbar>
               </WrapperButtonNavbar>
             </div>
@@ -30,19 +30,32 @@ const NavbarComponent = () => {
           <Checkbox.Group
             style={{ width: "100%", display: "flex", flexDirection: "column" }}
           >
-            {option.map((option) => {
-              return <Checkbox value={option.value}>{option.Label}</Checkbox>;
+            {option.map((option, index) => {
+              return (
+                <Checkbox key={index} value={option.value}>
+                  {option.Label}
+                </Checkbox>
+              );
             })}
 
-            <Checkbox value="B">B</Checkbox>
+            {/* <Checkbox value="B">B</Checkbox> */}
           </Checkbox.Group>
         );
-        case "price":
-          return option.map((option)=>{
-            return(
-              <div style={{ borderRadius: '10px', backgroundColor: '#ccc', width: 'fit-content'}}>{option}</div>
-            )
-          })
+      case "price":
+        return option.map((option) => {
+          return (
+            <div
+              key={option.id}
+              style={{
+                borderRadius: "10px",
+                backgroundColor: "#ccc",
+                width: "fit-content",
+              }}
+            >
+              {option}
+            </div>
+          );
+        });
       default:
         return;
     }
