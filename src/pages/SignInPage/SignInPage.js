@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   WrapperContainerLogin,
   WrapperSignInButton,
@@ -6,10 +6,42 @@ import {
 } from "./style";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { TextField } from "@mui/material";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
+import { Navigate, useNavigate } from "react-router-dom";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Icon mắt
+import InputForm from "../../components/InputForm/InputFrom";
+import { useMutation } from "@tanstack/react-query";
+import * as UserService from "../../service/UserService";
 
 const SignInPage = () => {
+  const mutation = useMutation({
+    mutationFn: (data) => UserService.loginUser(data),
+  });
+  const { data, isLoading } = mutation;
+  console.log("mutation", mutation);
+
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [password, setPassword] = useState(""); // Trạng thái mật khẩu
+  const [email, setEmail] = useState("");
+
+  // Hàm để điều khiển hiển thị mật khẩu
+  const handleTogglePassword = () => {
+    setIsShowPassword(!isShowPassword);
+  };
+  // const handleOnChangeEmail = (e) => {
+  //   setEmail(e.target.value);
+  //   console.log("email:", e.target.value);
+  // };
+  const handleClickSignUp = () => {
+    mutation.mutate({ email, password });
+    console.log("in:", email, password);
+  };
+  const navigate = useNavigate();
+  const handleNavigateSignUp = () => {
+    navigate("/signup");
+  };
+
   return (
     <div
       style={{
@@ -36,21 +68,43 @@ const SignInPage = () => {
           <FcGoogle />
         </div>
         <div style={{ paddingTop: " 20px" }}>
-          <TextField
+          <InputForm
             id="outlined-basic"
-            label="tai khoan"
+            label="email"
             variant="outlined"
             style={{ width: "100%" }}
+            value={email}
+            // handleOnChange={handleOnChangeEmail}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div style={{ paddingTop: " 20px" }}>
-          <TextField
+          <InputForm
             id="outlined-basic"
             label="mat khau"
             variant="outlined"
             style={{ width: "100%" }}
+            type={isShowPassword ? "text" : "password"} // Thay đổi type khi ẩn/hiện mật khẩu
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} // Điều khiển trạng thái mật khẩu
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleTogglePassword}>
+                    {isShowPassword ? (
+                      <AiOutlineEyeInvisible />
+                    ) : (
+                      <AiOutlineEye />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </div>
+        {data?.status === "ERR" && (
+          <span style={{ color: "red" }}>{data?.message}</span>
+        )}
         <div
           style={{
             color: "blue", // Màu chữ xanh
@@ -63,6 +117,8 @@ const SignInPage = () => {
         </div>
         <WrapperSignInButton>
           <ButtonComponent
+            onClick={handleClickSignUp}
+            disabled={false}
             size={40}
             styleButton={{
               background: "rgb(255,57,69)",
@@ -78,7 +134,7 @@ const SignInPage = () => {
             }}
           ></ButtonComponent>
         </WrapperSignInButton>
-        <div style={{ display: 'flex', justifyContent: 'center'}}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <button
             style={{
               backgroundColor: "transparent",
@@ -87,6 +143,7 @@ const SignInPage = () => {
               cursor: "pointer",
               fontSize: "16px",
             }}
+            onClick={handleNavigateSignUp}
           >
             Đăng kí tài khoản mới
           </button>

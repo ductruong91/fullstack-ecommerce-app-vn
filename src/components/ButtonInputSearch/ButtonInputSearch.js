@@ -18,7 +18,10 @@ const ButtonInputSearch = (props) => {
         size={size}
         placeholder={placeholder}
         variant="outlined"
-        style={{ backgroundColor: "rgb(243, 244, 247)" }}
+        style={{
+          backgroundColor: "rgb(243, 244, 247)",
+          border: "none",
+        }}
       />
 
       <Button

@@ -7,8 +7,9 @@ import {
   WrapperIconCart,
   WrapperListPostsIcon,
   WrapperTextHeader,
+  WrapperTextHeaderSmall,
 } from "./style";
-import { AudioOutlined } from "@ant-design/icons";
+import { AudioOutlined, CaretDownOutlined } from "@ant-design/icons";
 import { Input, Space } from "antd";
 
 import { UserOutlined } from "@ant-design/icons";
@@ -20,12 +21,18 @@ import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import { BsFileEarmarkPostFill } from "react-icons/bs";
 import Navigation from "./Navigation/Navigation";
 import { FaListAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const onSearch = (value, _e, info) => console.log(info?.source, value);
 
 const HeaderComponent = () => {
+  const navigate = useNavigate();
+  const handleNavigateLogin = () => {
+    navigate("/signin");
+  };
+
   return (
-    <div >
+    <div>
       <WrappeHeader gutter={10}>
         <Col span={5}>
           <WrapperTextHeader>bkE</WrapperTextHeader>
@@ -46,10 +53,10 @@ const HeaderComponent = () => {
         >
           <div>
             <WrapperIconCart>
-            <Badge count = {4}>
-              <LocalMallIcon style={{ fontSize: "40px" }} />
-            </Badge>
-              
+              <Badge count={4}>
+                <LocalMallIcon style={{ fontSize: "40px" }} />
+              </Badge>
+
               <div>
                 <span style={{ whiteSpace: "nowrap" }}> gio hang</span>
               </div>
@@ -62,8 +69,12 @@ const HeaderComponent = () => {
                 <AccountCircleIcon style={{ fontSize: "40px" }} />
               </WrapperIconAccount>
             </div>
-            <div>
-              <span style={{ whiteSpace: "nowrap" }}> đăng nhập</span>
+            <div onClick={handleNavigateLogin} style={{ cursor: "pointer" }}>
+              <WrapperTextHeaderSmall> đăng nhập</WrapperTextHeaderSmall>
+              <div>
+                <WrapperTextHeaderSmall> tài khoan</WrapperTextHeaderSmall>
+                <CaretDownOutlined />
+              </div>{" "}
             </div>
           </WrapperHeaderAccount>
 

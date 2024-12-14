@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   WrapperContainerLogin,
   WrapperSignInButton,
@@ -6,10 +6,38 @@ import {
 } from "./style";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { TextField } from "@mui/material";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
+import { useNavigate } from "react-router-dom";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Icon mắt
+import InputForm from "../../components/InputForm/InputFrom";
+import * as UserService from "../../service/UserService";
+import { useMutation } from "@tanstack/react-query";
 
 const SignUpPage = () => {
+  const mutation = useMutation({
+    mutationFn: (data) => UserService.signupUser(data),
+  });
+
+  const { data, isLoading } = mutation;
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [password, setPassword] = useState(""); // Trạng thái mật khẩu
+  const [confirmPassword, setConfirmPassword] = useState(""); // Trạng thái mật khẩu
+  const [email, setEmail] = useState(""); // Trạng thái mật khẩu
+  // Hàm để điều khiển hiển thị mật khẩu
+  const handleTogglePassword = () => {
+    setIsShowPassword(!isShowPassword);
+  };
+
+  const handleClickSignUp = () => {
+    mutation.mutate({ email, password, confirmPassword });
+    console.log("thong tin:", email, password, confirmPassword);
+  };
+
+  const navigate = useNavigate();
+  const handleNavigateSignUp = () => {
+    navigate("/signin");
+  };
   return (
     <div
       style={{
@@ -22,7 +50,7 @@ const SignUpPage = () => {
       }}
     >
       <WrapperContainerLogin>
-        <WrapperTexSignIn>signin</WrapperTexSignIn>
+        <WrapperTexSignIn>signup</WrapperTexSignIn>
         <div
           style={{
             display: "flex",
@@ -36,11 +64,13 @@ const SignUpPage = () => {
           <FcGoogle />
         </div>
         <div style={{ paddingTop: " 20px" }}>
-          <TextField
+          <InputForm
             id="outlined-basic"
-            label="tai khoan"
+            label="email"
             variant="outlined"
             style={{ width: "100%" }}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         <div style={{ paddingTop: " 20px" }}>
@@ -49,20 +79,56 @@ const SignUpPage = () => {
             label="mat khau"
             variant="outlined"
             style={{ width: "100%" }}
+            type={isShowPassword ? "text" : "password"} // Thay đổi type khi ẩn/hiện mật khẩu
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} // Điều khiển trạng thái mật khẩu
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleTogglePassword}>
+                    {isShowPassword ? (
+                      <AiOutlineEyeInvisible />
+                    ) : (
+                      <AiOutlineEye />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </div>
 
         <div style={{ paddingTop: " 20px" }}>
-          <TextField
+          <InputForm
             id="outlined-basic"
             label="confirm mat khau"
             variant="outlined"
             style={{ width: "100%" }}
+            type={isShowPassword ? "text" : "password"} // Thay đổi type khi ẩn/hiện mật khẩu
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)} // Điều khiển trạng thái mật khẩu
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleTogglePassword}>
+                    {isShowPassword ? (
+                      <AiOutlineEyeInvisible />
+                    ) : (
+                      <AiOutlineEye />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </div>
+        {data?.status === "ERR" && (
+          <span style={{ color: "red" }}>{data?.message}</span>
+        )}
 
         <WrapperSignInButton>
           <ButtonComponent
+            onClick={handleClickSignUp}
             size={40}
             styleButton={{
               background: "rgb(255,57,69)",
@@ -87,6 +153,7 @@ const SignUpPage = () => {
               cursor: "pointer",
               fontSize: "16px",
             }}
+            onClick={handleNavigateSignUp}
           >
             Đăng nhập
           </button>

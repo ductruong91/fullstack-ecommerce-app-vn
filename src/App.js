@@ -26,7 +26,7 @@ function App() {
     const res = await axios.get(
       `${process.env.REACT_APP_API_KEY}/product/get-all-product`
     );
-    return res.data
+    return res.data;
   };
   const query = useQuery({ queryKey: ["todos"], queryFn: fetchApi });
   console.log("query", query);
