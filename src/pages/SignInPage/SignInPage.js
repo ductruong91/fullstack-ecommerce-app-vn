@@ -22,7 +22,7 @@ const SignInPage = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [password, setPassword] = useState(""); // Trạng thái mật khẩu
   const [email, setEmail] = useState("");
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
 
   const mutation = useMutation({
     mutationFn: (data) => UserService.loginUser(data),
@@ -33,7 +33,7 @@ const SignInPage = () => {
     if (data?.status === "success") {
       message.success();
       navigate("/");
-      localStorage.setItem("access_token", data?.access_token);
+      localStorage.setItem("access_token", JSON.stringify(data?.access_token));
       if (data?.access_token) {
         const decoded = jwtDecode(data?.access_token);
         console.log("decoded:", decoded);
@@ -49,7 +49,7 @@ const SignInPage = () => {
 
   const handleGetDetailUser = async (id, token) => {
     const res = await UserService.getDetailUser(id, token);
-    dispath(updateUser({ ...res?.data, access_token: token }));
+    dispatch(updateUser({ ...res?.data, access_token: token }));
   };
 
   console.log("mutation", mutation);
