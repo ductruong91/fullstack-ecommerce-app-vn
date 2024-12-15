@@ -41,3 +41,11 @@ export const WrapperListPostsIcon = styled.div`
 export const WrapperTextHeaderSmall = styled.div`
   white-space: nowrap;
 `;
+
+export const WrapperContent = styled.p`
+  cursor: pointer;
+  &:hover {
+    background-color: #f0f0f0; /* Màu nền khi hover */
+    cursor: pointer;
+  }
+`;

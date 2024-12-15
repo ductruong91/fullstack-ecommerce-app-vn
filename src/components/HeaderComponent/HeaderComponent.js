@@ -1,7 +1,8 @@
-import { Badge, Col } from "antd";
+import { Badge, Col, Popover } from "antd";
 import React, { useEffect, useState } from "react";
 import {
   WrappeHeader,
+  WrapperContent,
   WrapperHeaderAccount,
   WrapperIconAccount,
   WrapperIconCart,
@@ -22,11 +23,14 @@ import { BsFileEarmarkPostFill } from "react-icons/bs";
 import Navigation from "./Navigation/Navigation";
 import { FaListAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as UserService from "../../service/UserService";
+import { resetUser } from "../../redux/slides/userSilde";
 
 const onSearch = (value, _e, info) => console.log(info?.source, value);
 
 const HeaderComponent = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   console.log("user", user);
@@ -34,7 +38,18 @@ const HeaderComponent = () => {
   const handleNavigateLogin = () => {
     navigate("/signin");
   };
+  const handleLogout = async () => {
+    await UserService.logoutUser();
+    dispatch(resetUser());
+    console.log("user sau logout", user);
+  };
 
+  const content = (
+    <div>
+      <WrapperContent>thông tin người dùng</WrapperContent>
+      <WrapperContent onClick={handleLogout}>đăng xuất</WrapperContent>
+    </div>
+  );
   return (
     <div>
       <WrappeHeader gutter={10}>
@@ -73,14 +88,32 @@ const HeaderComponent = () => {
                 <AccountCircleIcon style={{ fontSize: "40px" }} />
               </WrapperIconAccount>
             </div>
+
             {user?.name ? (
-              <div style={{ cursor: "pointer" }}>{user.name}</div>
+              <>
+                <Popover
+                  placement="bottomLeft"
+                  // title="tittle"
+                  content={content}
+                  trigger="click"
+                >
+                  <div
+                    style={{
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {user.name}
+                    <CaretDownOutlined />
+                  </div>
+                </Popover>
+              </>
             ) : (
               <div onClick={handleNavigateLogin} style={{ cursor: "pointer" }}>
                 <WrapperTextHeaderSmall> đăng nhập</WrapperTextHeaderSmall>
                 <div>
                   {/* <WrapperTextHeaderSmall> tài khoan</WrapperTextHeaderSmall> */}
-                  <CaretDownOutlined />
                 </div>{" "}
               </div>
             )}
