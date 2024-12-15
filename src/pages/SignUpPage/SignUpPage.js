@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   WrapperContainerLogin,
   WrapperSignInButton,
@@ -13,13 +13,21 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Icon m�
 import InputForm from "../../components/InputForm/InputFrom";
 import * as UserService from "../../service/UserService";
 import { useMutation } from "@tanstack/react-query";
+import * as message from "../../components/Message/Message";
 
 const SignUpPage = () => {
   const mutation = useMutation({
     mutationFn: (data) => UserService.signupUser(data),
   });
 
-  const { data, isLoading } = mutation;
+  const { data, isSuccess } = mutation;
+
+  useEffect(() => {
+    if (data?.status === "success") {
+      message.success();
+    }
+  });
+
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [password, setPassword] = useState(""); // Trạng thái mật khẩu
   const [confirmPassword, setConfirmPassword] = useState(""); // Trạng thái mật khẩu

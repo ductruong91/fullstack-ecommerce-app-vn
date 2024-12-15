@@ -1,5 +1,5 @@
 import { Badge, Col } from "antd";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   WrappeHeader,
   WrapperHeaderAccount,
@@ -22,11 +22,15 @@ import { BsFileEarmarkPostFill } from "react-icons/bs";
 import Navigation from "./Navigation/Navigation";
 import { FaListAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const onSearch = (value, _e, info) => console.log(info?.source, value);
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
+  console.log("user", user);
+
   const handleNavigateLogin = () => {
     navigate("/signin");
   };
@@ -69,13 +73,17 @@ const HeaderComponent = () => {
                 <AccountCircleIcon style={{ fontSize: "40px" }} />
               </WrapperIconAccount>
             </div>
-            <div onClick={handleNavigateLogin} style={{ cursor: "pointer" }}>
-              <WrapperTextHeaderSmall> đăng nhập</WrapperTextHeaderSmall>
-              <div>
-                <WrapperTextHeaderSmall> tài khoan</WrapperTextHeaderSmall>
-                <CaretDownOutlined />
-              </div>{" "}
-            </div>
+            {user?.name ? (
+              <div style={{ cursor: "pointer" }}>{user.name}</div>
+            ) : (
+              <div onClick={handleNavigateLogin} style={{ cursor: "pointer" }}>
+                <WrapperTextHeaderSmall> đăng nhập</WrapperTextHeaderSmall>
+                <div>
+                  {/* <WrapperTextHeaderSmall> tài khoan</WrapperTextHeaderSmall> */}
+                  <CaretDownOutlined />
+                </div>{" "}
+              </div>
+            )}
           </WrapperHeaderAccount>
 
           <WrapperListPostsIcon>

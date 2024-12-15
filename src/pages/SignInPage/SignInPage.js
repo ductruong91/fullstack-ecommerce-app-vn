@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   WrapperContainerLogin,
   WrapperSignInButton,
@@ -13,17 +13,46 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Icon m�
 import InputForm from "../../components/InputForm/InputFrom";
 import { useMutation } from "@tanstack/react-query";
 import * as UserService from "../../service/UserService";
+import * as message from "../../components/Message/Message";
+import { jwtDecode } from "jwt-decode";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../../redux/slides/userSilde";
 
 const SignInPage = () => {
-  const mutation = useMutation({
-    mutationFn: (data) => UserService.loginUser(data),
-  });
-  const { data, isLoading } = mutation;
-  console.log("mutation", mutation);
-
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [password, setPassword] = useState(""); // Trạng thái mật khẩu
   const [email, setEmail] = useState("");
+  const dispath = useDispatch();
+
+  const mutation = useMutation({
+    mutationFn: (data) => UserService.loginUser(data),
+  });
+  const { data, isSuccess, isError } = mutation;
+
+  useEffect(() => {
+    if (data?.status === "success") {
+      message.success();
+      navigate("/");
+      localStorage.setItem("access_token", data?.access_token);
+      if (data?.access_token) {
+        const decoded = jwtDecode(data?.access_token);
+        console.log("decoded:", decoded);
+        if (decoded?.id) {
+          handleGetDetailUser(decoded.id, data?.access_token);
+        }
+
+        // Lưu tên người dùng vào localStorage
+        localStorage.setItem("username", decoded?.name);
+      }
+    }
+  }, [isSuccess, isError]);
+
+  const handleGetDetailUser = async (id, token) => {
+    const res = await UserService.getDetailUser(id, token);
+    dispath(updateUser({ ...res?.data, access_token: token }));
+  };
+
+  console.log("mutation", mutation);
 
   // Hàm để điều khiển hiển thị mật khẩu
   const handleTogglePassword = () => {
