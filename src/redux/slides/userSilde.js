@@ -23,6 +23,7 @@ export const userSlice = createSlice({
         phone = "",
         avatar = "",
         address = "",
+        role = "",
         access_token,
       } = action.payload;
       console.log("action", action);
@@ -32,6 +33,7 @@ export const userSlice = createSlice({
       state.address = address;
       state.avatar = avatar;
       state.id = _id;
+      state.role = role;
       state.access_token = access_token;
     },
     resetUser: (state) => {
@@ -41,6 +43,7 @@ export const userSlice = createSlice({
       state.address = "";
       state.avatar = "";
       state.id = "";
+      state.role = "";
       state.access_token = "";
     },
   },

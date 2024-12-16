@@ -62,7 +62,7 @@ const SignInPage = () => {
   //   setEmail(e.target.value);
   //   console.log("email:", e.target.value);
   // };
-  const handleClickSignUp = () => {
+  const handleClickSignIp = () => {
     mutation.mutate({ email, password });
     console.log("in:", email, password);
   };
@@ -146,7 +146,7 @@ const SignInPage = () => {
         </div>
         <WrapperSignInButton>
           <ButtonComponent
-            onClick={handleClickSignUp}
+            onClick={handleClickSignIp}
             disabled={false}
             size={40}
             styleButton={{

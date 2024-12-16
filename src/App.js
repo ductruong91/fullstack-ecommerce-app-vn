@@ -17,7 +17,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { isJsonString } from "./ultils";
 import { jwtDecode } from "jwt-decode";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "./redux/slides/userSilde";
 import * as UserService from "./service/UserService";
 
@@ -30,6 +30,9 @@ function App() {
   // };
   // const query = useQuery({ queryKey: ["todos"], queryFn: fetchApi });
   // console.log("query", query);
+  const user = useSelector((state) => state.user);
+  console.log("role", user.role);
+
   const dispatch = useDispatch();
   useEffect(() => {
     const { storageData, decoded } = handleDecoded();
@@ -45,9 +48,9 @@ function App() {
       storageData = JSON.parse(storageData);
       decoded = jwtDecode(storageData);
     }
-    console.log("storagedata", storageData); // In ra giá trị access token sau khi parse
+    // console.log("storagedata", storageData); // In ra giá trị access token sau khi parse
 
-    return {decoded, storageData};
+    return { decoded, storageData };
   };
 
   UserService.axiosJWT.interceptors.request.use(
@@ -77,10 +80,12 @@ function App() {
         <Routes>
           {routes.map((route) => {
             const Page = route.page;
+            const isCheckAuth = route.isAdmin;
             const Layout = route.isShowHeader ? DefaultComponent : Fragment;
             return (
               <Route
                 key={route}
+                // path={isCheckAuth && user.role === "user" ? route.path : "/"}
                 path={route.path}
                 element={
                   <Layout>

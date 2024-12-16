@@ -47,12 +47,20 @@ const HeaderComponent = () => {
   const handleNavigateProfileUser = () => {
     navigate("/profile-user/profile-account");
   };
+  const handleNavigateAdmin = () => {
+    navigate("/system/admin");
+  };
 
   const content = (
     <div>
       <WrapperContent onClick={handleNavigateProfileUser}>
         thông tin người dùng
       </WrapperContent>
+      {user?.role === "admin" && (
+        <WrapperContent onClick={handleNavigateAdmin}>
+          system admin
+        </WrapperContent>
+      )}
       <WrapperContent onClick={handleLogout}>đăng xuất</WrapperContent>
     </div>
   );
