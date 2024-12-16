@@ -27,12 +27,29 @@ const AvatarWrapper = styled.div`
   cursor: pointer;
 `;
 
+const AvatarButton = styled.label`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #ddd;
+  overflow: hidden;
+  cursor: pointer;
+  margin-bottom: 20px;
+`;
+
 const AvatarImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
 `;
 
+const UploadInput = styled.input`
+  display: none;
+`;
 const AvatarChangeButton = styled.button`
   position: absolute;
   bottom: 10px;
@@ -74,6 +91,7 @@ const ProfileAccount = () => {
       };
       reader.readAsDataURL(file);
     }
+    
   };
 
   const handleInputChange = (e) => {
@@ -97,25 +115,22 @@ const ProfileAccount = () => {
 
   return (
     <ProfileWrapper>
-      {/* Avatar */}
-      <AvatarWrapper>
+      {/* Nút Avatar upload */}
+      <AvatarButton htmlFor="avatar-upload">
         {formData.avatar ? (
           <AvatarImage src={formData.avatar} alt="Avatar" />
         ) : (
-          <div style={{ color: "#fff" }}>
+          <div style={{ color: "#fff", fontSize: "24px" }}>
             {user?.name?.charAt(0)?.toUpperCase()}
           </div>
         )}
-        <AvatarChangeButton>
-          <input
-            type="file"
-            style={{ display: "none" }}
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          <span>+</span>
-        </AvatarChangeButton>
-      </AvatarWrapper>
+        <UploadInput
+          id="avatar-upload"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+      </AvatarButton>
 
       {/* Các trường thông tin người dùng */}
       <TextField

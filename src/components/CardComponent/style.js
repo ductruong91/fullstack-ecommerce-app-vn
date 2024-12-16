@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 
 export const WrapperCardStyle = styled(Card)`
+${'' /* display: flex; */}
 width: 200px;
 & img {
   height:167px;
@@ -31,7 +32,7 @@ export const WrapperPriceText = styled.div`
 
 export const WrapperTimePostText = styled.div`
   color: #9b9b9b;
-  display: inline;
+  display: flex;
   font-size: 10px;
   line-height: 11.5px;
   margin: 0px 3px;

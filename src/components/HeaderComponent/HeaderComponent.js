@@ -91,7 +91,20 @@ const HeaderComponent = () => {
           <WrapperHeaderAccount>
             <div>
               <WrapperIconAccount>
-                <AccountCircleIcon style={{ fontSize: "40px" }} />
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt="avatar"
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                    }}
+                  ></img>
+                ) : (
+                  <AccountCircleIcon style={{ fontSize: "40px" }} />
+                )}
               </WrapperIconAccount>
             </div>
 

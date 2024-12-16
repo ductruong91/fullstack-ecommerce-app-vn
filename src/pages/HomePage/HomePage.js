@@ -19,8 +19,32 @@ import CardComponent from "../../components/CardComponent/CardComponent";
 import NavbarComponent from "../../components/NavbarComponent/NavbarComponent";
 import { colors } from "@mui/material";
 import { Margin } from "@mui/icons-material";
+import * as ProductService from "../../service/ProductService";
+import { useQuery } from "@tanstack/react-query";
 
 const HomePage = () => {
+  //xu li get all product ra ngoai
+  const fetchProductAll = async () => {
+    const res = await ProductService.getAllProduct();
+    console.log("res", res.data);
+    return res.data;
+  };
+
+  // const { isLoading, data } = useQuery({
+  //   queryKey: ["product"], // Tên query key
+  //   queryFn: fetchProductAll, // Hàm fetch dữ liệu
+  // });
+  // console.log("data", data);
+
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["products"], // Tên query key
+    queryFn: fetchProductAll, // Hàm fetch API
+    retry: 3,
+    retryDelay: 1000,
+  });
+
+  console.log("data", products);
+
   return (
     <>
       <div
@@ -38,16 +62,23 @@ const HomePage = () => {
         </WrapperNewText>
 
         <WrapperProduct>
-          <CardComponent />
-          <CardComponent />
-          <CardComponent />
-          <CardComponent />
-          <CardComponent />
-          <CardComponent />
-          <CardComponent />
-          <CardComponent />
-          <CardComponent />
-          <CardComponent />
+          {products?.map((product) => {
+            return (
+              <CardComponent
+                key={product._id}
+                name={product.name}
+                description={product.description}
+                price={product.price}
+                type={product.type}
+                images={product.images}
+                stock={product.stock}
+                reviews={product.reviews}
+                rating={product.rating}
+                address={product.address}
+                updatedAt={product.updatedAt}
+              />
+            );
+          })}
         </WrapperProduct>
         <div
           style={{ display: "flex", margin: "10px", justifyContent: "center" }}
