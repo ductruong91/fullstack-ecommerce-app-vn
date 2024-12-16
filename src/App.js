@@ -85,7 +85,7 @@ function App() {
                 element={
                   <Layout>
                     <Page />
-                    {route.isShowHeader && <FooterComponent />}
+                    {/* {route.isShowHeader && <FooterComponent />} */}
                   </Layout>
                 }
               />

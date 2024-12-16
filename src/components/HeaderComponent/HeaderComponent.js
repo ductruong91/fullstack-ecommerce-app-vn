@@ -33,7 +33,7 @@ const HeaderComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-  console.log("user", user);
+  console.log("useid trong header", user.id);
 
   const handleNavigateLogin = () => {
     navigate("/signin");
@@ -44,9 +44,15 @@ const HeaderComponent = () => {
     console.log("user sau logout", user);
   };
 
+  const handleNavigateProfileUser = () => {
+    navigate("/profile-user/profile-account");
+  };
+
   const content = (
     <div>
-      <WrapperContent>thông tin người dùng</WrapperContent>
+      <WrapperContent onClick={handleNavigateProfileUser}>
+        thông tin người dùng
+      </WrapperContent>
       <WrapperContent onClick={handleLogout}>đăng xuất</WrapperContent>
     </div>
   );
@@ -104,7 +110,7 @@ const HeaderComponent = () => {
                       alignItems: "center",
                     }}
                   >
-                    {user.name}
+                    {user?.name}
                     <CaretDownOutlined />
                   </div>
                 </Popover>
