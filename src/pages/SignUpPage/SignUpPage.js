@@ -31,15 +31,16 @@ const SignUpPage = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [password, setPassword] = useState(""); // Trạng thái mật khẩu
   const [confirmPassword, setConfirmPassword] = useState(""); // Trạng thái mật khẩu
-  const [email, setEmail] = useState(""); // Trạng thái mật khẩu
+  const [email, setEmail] = useState(""); // Trạng thái email
+  const [name, setName] = useState("");
   // Hàm để điều khiển hiển thị mật khẩu
   const handleTogglePassword = () => {
     setIsShowPassword(!isShowPassword);
   };
 
   const handleClickSignUp = () => {
-    mutation.mutate({ email, password, confirmPassword });
-    console.log("thong tin:", email, password, confirmPassword);
+    mutation.mutate({ email, name, password, confirmPassword });
+    console.log("thong tin:", email, name, password, confirmPassword);
   };
 
   const navigate = useNavigate();
@@ -81,6 +82,18 @@ const SignUpPage = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
+
+        <div style={{ paddingTop: " 20px" }}>
+          <InputForm
+            id="outlined-basic"
+            label="tên của bạn"
+            variant="outlined"
+            style={{ width: "100%" }}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
         <div style={{ paddingTop: " 20px" }}>
           <TextField
             id="outlined-basic"

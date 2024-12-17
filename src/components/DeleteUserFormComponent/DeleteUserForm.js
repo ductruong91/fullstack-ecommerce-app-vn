@@ -25,7 +25,7 @@ const DeleteUserForm = ({ visible, user, onConfirmDelete, onCancel }) => {
       ]}
     >
       <p>
-        Are you sure you want to delete the user <strong>{user?.name}</strong>?
+        Are you sure you want to delete <strong>{user?.name}</strong>?
       </p>
     </Modal>
   );

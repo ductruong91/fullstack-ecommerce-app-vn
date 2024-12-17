@@ -104,8 +104,8 @@ const HeaderComponent = () => {
                     src={user.avatar}
                     alt="avatar"
                     style={{
-                      width: "50px",
-                      height: "50px",
+                      width: "35px",
+                      height: "35px",
                       objectFit: "cover",
                       borderRadius: "50%",
                     }}

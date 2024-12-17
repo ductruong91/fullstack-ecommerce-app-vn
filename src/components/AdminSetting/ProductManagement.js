@@ -8,31 +8,31 @@ import UserDetailForm from "./UserDetailFormComponent/UserDetailForm";
 import { success } from "../Message/Message";
 import DeleteUserForm from "../DeleteUserFormComponent/DeleteUserForm";
 import Highlighter from "react-highlight-words";
+import ProductDetailForm from "./ProductDetailForm/ProductDetailForm";
 
-const UserManagement = () => {
+const ProductManagement = () => {
   const user = useSelector((state) => state.user); // Lấy thông tin người dùng từ Redux store
   console.log("acesstoken:", user.access_token);
-  const [selectedUser, setSelectedUser] = useState(""); // Lưu trữ người dùng được chọn để xem chi tiết
+  const [selectedProduct, setSelectedProduct] = useState(""); // Lưu trữ người dùng được chọn để xem chi tiết
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // Quản lý modal xác nhận xóa
-  const [userToDelete, setUserToDelete] = useState(null); // Lưu thông tin người dùng cần xóa
-  const [data, setData] = useState([]); // Dữ liệu người dùng lưu trữ trong state
+  const [productToDelete, setProductToDelete] = useState(null); // Lưu thông tin người dùng cần xóa
+  const [data, setData] = useState([]); // Dữ liệu san pham lưu trữ trong state
 
   //xu li get all User ra ngoai
   const fetchUserAll = async () => {
-    const res = await AdminService.getAllUser(user.access_token);
+    const res = await AdminService.getAllProduct();
     console.log("res", res.data);
     setData(res.data);
     return res.data;
   };
 
-  const { data: AllUsers, isLoading } = useQuery({
+  const { data: AllProduct, isLoading } = useQuery({
     queryKey: ["users"], // Tên query key
     queryFn: fetchUserAll, // Hàm fetch API
     retry: 3,
     retryDelay: 1000,
   });
-
-  console.log("data sau khi lay", AllUsers);
+  console.log("data sau khi lay", AllProduct);
 
   //các thành phần liên quan đến getSearchcolum
 
@@ -177,25 +177,28 @@ const UserManagement = () => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      ...getColumnSearchProps("email"),
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
       sorter: (a, b) => {
-        const roleA = a.role ?? ""; // tranh th cos may dua moi tao tk, chua co ten
-        const roleB = b.role ?? "";
-        return roleA.length - roleB.length;
+        const typeA = a.type ?? ""; // tranh th cos may dua moi tao tk, chua co ten
+        const typeB = b.type ?? "";
+        return typeA.length - typeB.length;
       },
+      ...getColumnSearchProps("type"),
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      sorter: (a, b) => a.price - b.price,
+    },
+
+    {
+      title: "Stock",
+      dataIndex: "stock",
+      key: "stock",
+      sorter: (a, b) => a.stock - b.stock,
     },
     {
       title: "Action",
@@ -221,9 +224,9 @@ const UserManagement = () => {
   //  const data = AllUsers;
 
   // Hàm xử lý xóa người dùng
-  const handleDelete = (user) => {
-    console.log("id nguoi can xoa", user._id);
-    setUserToDelete(user);
+  const handleDelete = (product) => {
+    console.log("id nguoi can xoa", product._id);
+    setProductToDelete(product);
     setIsDeleteModalVisible(true); // Hiển thị modal xác nhận
   };
 
@@ -233,7 +236,7 @@ const UserManagement = () => {
     // Logic xóa người dùng (thực hiện API xóa ở đây)
 
     try {
-      await AdminService.deleteUser(userToDelete._id, user.access_token);
+      await AdminService.deleteProduct(productToDelete._id, user.access_token);
       // Giả sử xóa thành công
       // Cập nhật lại state dữ liệu người dùng, loại bỏ người dùng vừa xóa
       setData((prevData) => prevData.filter((item) => item._id !== user._id));
@@ -250,23 +253,23 @@ const UserManagement = () => {
   };
 
   // Hàm xử lý xem thông tin người dùng
-  const handleView = (user) => {
-    console.log("user", user);
+  const handleView = (product) => {
+    console.log("product infor", product);
 
-    setSelectedUser(user); // Lưu trữ thông tin người dùng được chọn để hiển thị
-    console.log("selecteduser:", selectedUser);
+    setSelectedProduct(product); // Lưu trữ thông tin người dùng được chọn để hiển thị
+    console.log("selectedproduct:", selectedProduct);
   };
 
-  // useEffect để theo dõi sự thay đổi của selectedUser
+  // useEffect để theo dõi sự thay đổi của selectedproduct
   useEffect(() => {
-    if (selectedUser) {
-      console.log("Selected user has been updated:", selectedUser);
+    if (selectedProduct) {
+      console.log("Selected user has been updated:", selectedProduct);
     }
-  }, [selectedUser]); // Theo dõi khi selectedUser thay đổi
+  }, [selectedProduct]); // Theo dõi khi selectedProduct thay đổi
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>User Management</h2>
+      <h2>các sản phẩm được người dùng đăng bán</h2>
       <Table
         columns={columns}
         dataSource={data}
@@ -276,17 +279,21 @@ const UserManagement = () => {
       {/* Hiển thị modal xác nhận xóa người dùng */}
       <DeleteUserForm
         visible={isDeleteModalVisible}
-        user={userToDelete}
+        product={productToDelete}
         onConfirmDelete={confirmDelete}
         onCancel={handleCancelDelete}
       />
 
-      {/* Hiển thị modal hoặc form chi tiết khi chọn một người dùng */}
-      {selectedUser && (
-        <UserDetailForm user={selectedUser} setSelectedUser={setSelectedUser} />
+      {/* Hiển thị modal hoặc form chi tiết khi chọn một product */}
+      {selectedProduct && (
+        <ProductDetailForm
+          product={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
+          reqUser = {user}
+        />
       )}
     </div>
   );
 };
 
-export default UserManagement;
+export default ProductManagement;

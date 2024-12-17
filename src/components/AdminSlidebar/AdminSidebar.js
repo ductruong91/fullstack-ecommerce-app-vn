@@ -30,7 +30,7 @@ const AdminSidebar = () => {
           <Link to="user-management">Quản Lý Người Dùng</Link>
         </Menu.Item>
         <Menu.Item key="3" icon={<ProductOutlined />}>
-          <Link to="user-management">Quản Lý bài đăng/quản lí sản phẩm</Link>
+          <Link to="product-management">Quản Lý bài đăng/quản lí sản phẩm</Link>
         </Menu.Item>
         <Menu.Item key="4" icon={<ShoppingCartOutlined />}>
           <Link to="order-management">Quản Lý Đơn Hàng</Link>

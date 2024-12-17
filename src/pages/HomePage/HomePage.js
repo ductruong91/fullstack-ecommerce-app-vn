@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import Item from "antd/es/list/Item";
 import {
@@ -23,9 +23,9 @@ import * as ProductService from "../../service/ProductService";
 import { useQuery } from "@tanstack/react-query";
 
 const HomePage = () => {
+  const [searchText, setSearchText] = useState("");
+  const [filterType, setFilterType] = useState("");
 
-
-  
   //xu li get all product ra ngoai
   const fetchProductAll = async () => {
     const res = await ProductService.getAllProduct();

@@ -6,6 +6,7 @@ import Dashboard from "./Dashboard";
 import UserManagement from "./UserManagement";
 import OrderManagement from "./OrderManagement";
 import AddAdmin from "./AddAdmin";
+import ProductManagement from "./ProductManagement";
 
 const AdminContent = () => {
   return (
@@ -13,6 +14,7 @@ const AdminContent = () => {
       <Routes>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/user-management" element={<UserManagement />} />
+        <Route path="/product-management" element={<ProductManagement />} />
         <Route path="/order-management" element={<OrderManagement />} />
         <Route path="/add-admin" element={<AddAdmin />} />
       </Routes>
