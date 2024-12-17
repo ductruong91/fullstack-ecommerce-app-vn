@@ -6,6 +6,7 @@ import {
   UserOutlined,
   ShoppingCartOutlined,
   UserAddOutlined,
+  ProductOutlined,
 } from "@ant-design/icons";
 
 const AdminSidebar = () => {
@@ -28,10 +29,13 @@ const AdminSidebar = () => {
         <Menu.Item key="2" icon={<UserOutlined />}>
           <Link to="user-management">Quản Lý Người Dùng</Link>
         </Menu.Item>
-        <Menu.Item key="3" icon={<ShoppingCartOutlined />}>
+        <Menu.Item key="3" icon={<ProductOutlined />}>
+          <Link to="user-management">Quản Lý bài đăng/quản lí sản phẩm</Link>
+        </Menu.Item>
+        <Menu.Item key="4" icon={<ShoppingCartOutlined />}>
           <Link to="order-management">Quản Lý Đơn Hàng</Link>
         </Menu.Item>
-        <Menu.Item key="4" icon={<UserAddOutlined />}>
+        <Menu.Item key="5" icon={<UserAddOutlined />}>
           <Link to="add-admin">Thêm Admin</Link>
         </Menu.Item>
       </Menu>

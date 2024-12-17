@@ -23,6 +23,9 @@ import * as ProductService from "../../service/ProductService";
 import { useQuery } from "@tanstack/react-query";
 
 const HomePage = () => {
+
+
+  
   //xu li get all product ra ngoai
   const fetchProductAll = async () => {
     const res = await ProductService.getAllProduct();
