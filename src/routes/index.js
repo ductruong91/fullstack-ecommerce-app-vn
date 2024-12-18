@@ -8,6 +8,8 @@ import SignInPage from "../pages/SignInPage/SignInPage";
 import TypeProductPage from "../pages/TypeProductPage/TypeProductPage";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import AdminPage from "../pages/AdminPage/AdminPage";
+import PostProductPage from "../pages/PostProductPage/PostProductPage";
+import ShoppingCartPage from "../pages/ShoppingCartPage/ShoppingCartPage";
 
 export const routes = [
   {
@@ -43,7 +45,7 @@ export const routes = [
   },
 
   {
-    path: "/product-detail",
+    path: "/product-detail/:id",
     page: ProductDetailPage,
     isShowHeader: true,
   },
@@ -59,6 +61,18 @@ export const routes = [
     page: AdminPage,
     isShowHeader: false,
     isAdmin: true,
+  },
+
+  {
+    path: "/dang-tin",
+    page: PostProductPage,
+    isShowHeader: true,
+  },
+
+  {
+    path: "/cart",
+    page: ShoppingCartPage,
+    isShowHeader: true,
   },
 
   {

@@ -1,5 +1,5 @@
 import { Col, Image, InputNumber, Row } from "antd";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import imageProduct from "../../assets/images/cho.webp";
 import imageSmallProduct from "../../assets/images/cho.webp";
@@ -25,78 +25,122 @@ import {
 import { IoLocationOutline, IoTimeOutline } from "react-icons/io5";
 import { Button } from "@mui/material";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
+import * as ProductService from "../../service/ProductService";
+import { formatDistanceToNow } from "date-fns";
 
-const ProductDetailComponent = () => {
+const ProductDetailComponent = (idProduct) => {
   const onChange = () => {};
+  // console.log("productId", idProduct);
+  const [bigImage, setBigImage] = useState();
+
+  const [productData, setProductData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Hàm gọi API lấy thông tin sản phẩm
+  const fetchProductDetail = async (id) => {
+    try {
+      // console.log("id", id);
+
+      const response = await ProductService.getDetailProduct(id);
+      const data = response.data;
+      // console.log("data", data);
+
+      setProductData(data); // Gán dữ liệu sản phẩm vào state
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin sản phẩm:", error);
+    } finally {
+      setLoading(false); // Kết thúc tải dữ liệu
+    }
+  };
+
+  useEffect(() => {
+    if (idProduct) {
+      fetchProductDetail(idProduct.idProduct); // vì bên productpage truyền vào là object nên phải thêm 1 bước như này
+    }
+  }, [idProduct]);
+
+  if (loading) {
+    return <p>Đang tải thông tin sản phẩm...</p>; // Hiển thị trạng thái tải
+  }
+
+  if (!productData) {
+    return <p>Không tìm thấy sản phẩm!</p>; // Hiển thị thông báo khi không có dữ liệu
+  }
+
+  const {
+    name,
+    price,
+    stock,
+    description,
+    rating,
+    type,
+    images,
+    address,
+    updatedAt,
+    owner,
+  } = productData; // Giải nén dữ liệu sản phẩm từ API
+
+  console.log("product:", productData);
+
+  const timeAgo = updatedAt
+    ? formatDistanceToNow(new Date(updatedAt))
+    : "Đang cập nhật";
+
   return (
     <Row style={{ padding: "16px" }}>
       <Col span={10}>
         <Image
-          src={imageProduct}
-          alt="anh cho"
+          src={images[0]}
+          alt="anh product"
           preview="false"
           style={{ borderRadius: "5px" }}
         />
         <Row
           style={{ paddingTop: "10px", gap: "10px", justifyContent: "center" }}
         >
-          <WrapperStyleCol span={4}>
-            <WrapperStyleImageSmall
-              src={imageSmallProduct}
-              alt="anh nho"
-              preview="false"
-            />
-          </WrapperStyleCol>
-          <WrapperStyleCol span={4}>
-            <WrapperStyleImageSmall
-              src={imageSmallProduct}
-              alt="anh nho"
-              preview="false"
-            />
-          </WrapperStyleCol>
-          <WrapperStyleCol span={4}>
-            <WrapperStyleImageSmall
-              src={imageSmallProduct}
-              alt="anh nho"
-              preview="false"
-            />
-          </WrapperStyleCol>
-          <WrapperStyleCol span={4}>
-            <WrapperStyleImageSmall
-              src={imageSmallProduct}
-              alt="anh nho"
-              preview="false"
-            />
-          </WrapperStyleCol>
-          <WrapperStyleCol span={4}>
-            <WrapperStyleImageSmall
-              src={imageSmallProduct}
-              alt="anh nho"
-              preview="false"
-            />
-          </WrapperStyleCol>
+          {images.map((img, index) => (
+            <WrapperStyleCol span={4} key={index}>
+              <WrapperStyleImageSmall
+                src={img}
+                alt={`Ảnh nhỏ ${index + 1}`}
+                preview="false"
+                style={{
+                  width: "100%", // Đảm bảo ảnh vừa khung
+                  borderRadius: "5px",
+                  height: "80px", // Đặt kích thước cố định cho ảnh
+                  objectFit: "cover",
+                }}
+              />
+            </WrapperStyleCol>
+          ))}
         </Row>
       </Col>
       <Col span={14} style={{ padding: "30px", gap: "10px" }}>
-        <WrapperStyleNameProduct>cho con long ngan</WrapperStyleNameProduct>
+        <WrapperStyleNameProduct>{name}</WrapperStyleNameProduct>
 
-        <WrapperStyleStock>so luong con lai </WrapperStyleStock>
+        <WrapperStyleStock>số lượng còn lại: {stock}</WrapperStyleStock>
 
-        <WrapperPrice>3000.000 đ</WrapperPrice>
+        <WrapperPrice>
+          {" "}
+          {typeof price === "number"
+            ? price.toLocaleString()
+            : Number(price).toLocaleString()}
+          đ
+        </WrapperPrice>
 
         <WrapperLocation>
           <IoLocationOutline style={{ fontSize: "20px" }} />
-          <WrapperTextLocation>đia chi</WrapperTextLocation>
+          <WrapperTextLocation>{address || owner?.address}</WrapperTextLocation>
         </WrapperLocation>
 
         <WrapperTimePost>
           <IoTimeOutline style={{ fontSize: "20px" }} />
-          <WrapperTextTimePost>5 tieng truoc</WrapperTextTimePost>
+          <WrapperTextTimePost>{timeAgo}truoc</WrapperTextTimePost>
         </WrapperTimePost>
 
         <WrapperUser>
           <WrapperUserImage
-            src={imageSmallProduct}
+            src={owner?.avatar || "https://via.placeholder.com/50"}
             alt="anh nho"
             preview="false"
             style={{
@@ -106,7 +150,7 @@ const ProductDetailComponent = () => {
               borderRadius: "5px",
             }}
           />
-          <WrapperUserName>ten nguoi ban</WrapperUserName>
+          <WrapperUserName>{owner?.name}</WrapperUserName>
           <div
             style={{
               width: "3px",
@@ -116,7 +160,7 @@ const ProductDetailComponent = () => {
           ></div>
 
           <WrapperUserNumberProduct>
-            so luong hang dang ban
+            {owner?.sold > 0 && `${owner.sold} sản phẩm đã bán`}
           </WrapperUserNumberProduct>
         </WrapperUser>
 
@@ -125,8 +169,8 @@ const ProductDetailComponent = () => {
         <WrapperInputNumber
           size="large"
           min={1}
-          max={100000}
-          defaultValue={3}
+          max={stock}
+          defaultValue={1}
           onChange={onChange}
         />
         <WrapperBuyButton>

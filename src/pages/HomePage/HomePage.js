@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TypeProduct from "../../components/TypeProduct/TypeProduct";
 import Item from "antd/es/list/Item";
 import {
@@ -21,32 +21,69 @@ import { colors } from "@mui/material";
 import { Margin } from "@mui/icons-material";
 import * as ProductService from "../../service/ProductService";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import { Button } from "antd";
+const limit = 30;
 
 const HomePage = () => {
-  const [searchText, setSearchText] = useState("");
-  const [filterType, setFilterType] = useState("");
+  const filters = useSelector((state) => state.filter.filters); // Lấy filters từ Redux
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const [page, setPage] = useState(0); // Trang hiện tại
+  const [hasMore, setHasMore] = useState(true);
   //xu li get all product ra ngoai
-  const fetchProductAll = async () => {
-    const res = await ProductService.getAllProduct();
-    console.log("res", res.data);
-    return res.data;
+  // const fetchProductAll = async () => {
+  //   const res = await ProductService.getAllProduct();
+  //   console.log("res", res.data);
+  //   return res.data;
+  // };
+
+  const fetchFilteredProducts = async () => {
+    setIsLoading(true);
+    try {
+      const response = await ProductService.getAllFilteredProduct(
+        { filter: filters },
+        limit,
+        page
+      );
+      const data = response.data;
+
+      if (data?.length > 0) {
+        setProducts((prevProducts) => [...prevProducts, ...data]); // Gộp sản phẩm mới vào danh sách hiện tại
+        setHasMore(data.length === limit); // Nếu nhận đủ 10 sản phẩm, vẫn còn sản phẩm để tải
+      } else {
+        setHasMore(false); // Hết sản phẩm để tải
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+    console.log("data sau khi get", products);
+    setIsLoading(false);
   };
 
-  // const { isLoading, data } = useQuery({
-  //   queryKey: ["product"], // Tên query key
-  //   queryFn: fetchProductAll, // Hàm fetch dữ liệu
-  // });
-  // console.log("data", data);
+  // Theo dõi khi `page` thay đổi       // Chỉ gọi khi `page` không phải lần đầu
+  useEffect(() => {
+    console.log("page", page);
+    if (page > 0) {
+      fetchFilteredProducts(page);
+    }
+  }, [page]);
 
-  const { data: products, isLoading } = useQuery({
-    queryKey: ["products"], // Tên query key
-    queryFn: fetchProductAll, // Hàm fetch API
-    retry: 3,
-    retryDelay: 1000,
-  });
+  // Theo dõi khi `filters` thay đổi
+  useEffect(() => {
+    setProducts([]);
+    setPage(0);
+    fetchFilteredProducts();
+  }, [filters]);
 
-  console.log("data", products);
+  // Hàm xử lý khi nhấn nút "Xem thêm"
+  const handleLoadMore = () => {
+    if (hasMore) {
+      setPage((prevPage) => prevPage + 1); // Tăng trang để tải thêm
+    }
+    console.log("page", page);
+  };
 
   return (
     <>
@@ -68,7 +105,7 @@ const HomePage = () => {
           {products?.map((product) => {
             return (
               <CardComponent
-                key={product._id}
+                id={product._id}
                 name={product.name}
                 description={product.description}
                 price={product.price}
@@ -89,7 +126,8 @@ const HomePage = () => {
           <div>
             <ButtonComponent
               textButton="xem them"
-              type="outline"
+              // type="outline"
+              onClick={handleLoadMore}
               styleButton={{
                 border: "1px solid rgb(11, 116, 229)",
                 colors: "rgb(11, 116, 229)",

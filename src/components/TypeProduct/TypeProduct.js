@@ -1,9 +1,8 @@
-import React from 'react'
+import { Button } from "antd";
+import React from "react";
 
-const TypeProduct = ({name}) => {
-  return (
-    <div style={{padding:'10px'}}>{name}</div>
-  )
-}
+const TypeProduct = ({ name }) => {
+  return <Button style={{ padding: "10px" }}>{name}</Button>;
+};
 
-export default TypeProduct
+export default TypeProduct;

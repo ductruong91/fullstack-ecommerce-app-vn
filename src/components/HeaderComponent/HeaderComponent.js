@@ -1,4 +1,4 @@
-import { Badge, Col, Popover } from "antd";
+import { Badge, Button, Col, Popover } from "antd";
 import React, { useEffect, useState } from "react";
 import {
   WrappeHeader,
@@ -10,7 +10,11 @@ import {
   WrapperTextHeader,
   WrapperTextHeaderSmall,
 } from "./style";
-import { AudioOutlined, CaretDownOutlined } from "@ant-design/icons";
+import {
+  AudioOutlined,
+  CaretDownOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { Input, Space } from "antd";
 
 import { UserOutlined } from "@ant-design/icons";
@@ -26,14 +30,32 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as UserService from "../../service/UserService";
 import { resetUser } from "../../redux/slides/userSilde";
+import {
+  clearFilters,
+  removeFilter,
+  setFilter,
+} from "../../redux/slides/filterSlide";
 
 const onSearch = (value, _e, info) => console.log(info?.source, value);
 
 const HeaderComponent = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   console.log("useid trong header", user.id);
+
+  const filters = useSelector((state) => state.filter.filters); // Lấy filter từ Redux
+  const [searchText, setSearchText] = useState("");
+
+  const handleSearch = () => {
+    if (searchText) {
+      dispatch(setFilter({ key: "name", value: searchText })); // Thêm filter name
+    } else {
+      dispatch(clearFilters()); // Xóa filter nếu ô input rỗng
+    }
+    console.log("filter:", filters);
+  };
+
+  const navigate = useNavigate();
 
   const handleNavigateLogin = () => {
     navigate("/signin");
@@ -49,6 +71,17 @@ const HeaderComponent = () => {
   };
   const handleNavigateAdmin = () => {
     navigate("/system/admin");
+  };
+
+  const handlePostProduct = () => {
+    navigate("/dang-tin");
+  };
+
+  const handleHomePage = () => {
+    navigate("/");
+  };
+  const handleCart = () => {
+    navigate("/cart");
   };
 
   const content = (
@@ -68,16 +101,44 @@ const HeaderComponent = () => {
     <div>
       <WrappeHeader gutter={10}>
         <Col span={5}>
-          <WrapperTextHeader>bkE</WrapperTextHeader>
+          <WrapperTextHeader onClick={handleHomePage}>bkE</WrapperTextHeader>
         </Col>
 
         <Col span={11}>
-          <ButtonInputSearch
-            size="large"
-            placeholder="input"
-            bordered="false"
-            textButton="timkiem"
-          />
+          <div
+            style={{
+              display: "flex",
+              backgroundColor: "rgb(243, 244, 247)",
+              borderRadius: "10px",
+              width: "100%",
+            }}
+          >
+            <Input
+              size="large"
+              placeholder="input"
+              variant="outlined"
+              textButton="timkiem"
+              style={{
+                backgroundColor: "rgb(243, 244, 247)",
+                border: "none",
+                flex: 1, // Giúp thành phần này chiếm tối đa không gian
+              }}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            <Button
+              size="large"
+              style={{
+                backgroundColor: "rgb(243, 244, 247)",
+                border: "none",
+                flexShrink: 0,
+              }}
+              icon={<SearchOutlined />}
+              textButton="timkiem"
+              onClick={handleSearch}
+            >
+              tìm kiếm
+            </Button>
+          </div>
         </Col>
 
         <Col
@@ -87,11 +148,17 @@ const HeaderComponent = () => {
           <div>
             <WrapperIconCart>
               <Badge count={4}>
-                <LocalMallIcon style={{ fontSize: "40px" }} />
+                <LocalMallIcon
+                  style={{ fontSize: "40px" }}
+                  onClick={handleCart}
+                />
               </Badge>
 
               <div>
-                <span style={{ whiteSpace: "nowrap" }}> gio hang</span>
+                <span style={{ whiteSpace: "nowrap" }} onClick={handleCart}>
+                  {" "}
+                  gio hang
+                </span>
               </div>
             </WrapperIconCart>
           </div>
@@ -156,7 +223,7 @@ const HeaderComponent = () => {
           </WrapperListPostsIcon>
 
           <div>
-            <ButtonComponent
+            <Button
               size="large"
               styleButton={{
                 backgroundColor: "rgb(255,136,0)",
@@ -164,8 +231,10 @@ const HeaderComponent = () => {
               }}
               bordered="false"
               icon=<BsFileEarmarkPostFill />
-              textButton="đăng bán"
-            />
+              onClick={handlePostProduct}
+            >
+              đăng bán
+            </Button>
           </div>
         </Col>
       </WrappeHeader>

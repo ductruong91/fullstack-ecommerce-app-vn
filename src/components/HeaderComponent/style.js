@@ -10,6 +10,7 @@ export const WrappeHeader = styled(Row)`
 `;
 
 export const WrapperTextHeader = styled.span`
+  cursor: pointer;
   font-size: 18px;
   color: red;
   font-wejght: bold;
