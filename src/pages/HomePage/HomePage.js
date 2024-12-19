@@ -105,6 +105,7 @@ const HomePage = () => {
           {products?.map((product) => {
             return (
               <CardComponent
+                key={product._id}
                 id={product._id}
                 name={product.name}
                 description={product.description}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Layout, List, Checkbox, Divider, Typography, Button } from "antd";
 import { DeleteOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { removeProductFromCart } from "../../redux/slides/cartSlide";
+import { removeLastProduct } from "../../redux/slides/cartSlide";
 import * as OrderService from "../../service/OrderService";
 import * as ProductService from "../../service/ProductService";
 import { useNavigate } from "react-router-dom";
@@ -55,37 +55,35 @@ const CartProduct = ({ product, onToggle, onDelete, checked }) => (
   </div>
 );
 
-const ShoppingCart = () => {
+const ProductPayPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const user = useSelector((state) => state.user);
-  const cart = useSelector((state) => state.cart);
 
-  console.log("cart", cart);
+  const cart = useSelector((state) => state.cart);
+  const currentProduct = useSelector((state) => state.product);
+  const user = useSelector((state) => state.user);
+
+  const [products, setProducts] = useState([]); // chỉ có tác dụng để in
+
+  console.log("cart hien tai", cart);
 
   useEffect(() => {
-    if (cart.products) {
-      const updatedProducts = cart.products.map((product) => ({
-        ...product,
-        checked: false, // Thêm trạng thái checked mặc định
-      }));
-      setProducts(updatedProducts);
-    }
-  }, [cart.products]);
+    const quantity = cart.products[cart.products.length - 1].quantity;
+    const updatedProduct = {
+      ...currentProduct,
+      quantity: quantity,
+      checked: true,
+    };
+    setProducts((prevProducts) => [updatedProduct, ...prevProducts]);
+    dispatch(removeLastProduct());
+  }, []);
 
-  // useEffect(() => {
-  //   setProducts((prevProducts) => [updatedProduct, ...prevProducts]);
-  // }, []);
-
-  // console.log("currentProduct", currentProduct);
+  console.log("currentProduct", currentProduct);
 
   const [checkAll, setCheckAll] = useState(false);
 
   // Toggle checkbox của từng sản phẩm
   const toggleProduct = (_id) => {
-    console.log("id duoc chon", _id);
-
     setProducts((prev) =>
       prev.map((product) =>
         product._id === _id
@@ -98,7 +96,6 @@ const ShoppingCart = () => {
   // Xử lý xóa sản phẩm
   const handleDelete = (_id) => {
     setProducts(products.filter((product) => product._id !== _id));
-    dispatch(removeProductFromCart(_id));
   };
 
   // Xử lý checkbox "Tất cả sản phẩm"
@@ -115,62 +112,46 @@ const ShoppingCart = () => {
   const shipping = 30000;
 
   const handleCheckout = async () => {
-    // Lọc sản phẩm được chọn
-    const selectedProducts = products.filter((product) => product.checked);
-    console.log("selectedProducts", selectedProducts);
-    // Tạo danh sách order cho từng sản phẩm được chọn
-    const orders = selectedProducts.map((product) => ({
+    const currentOrder = {
       buyerId: user.id, // Người mua
-      sellerId: product.userId, // Người bán
+      sellerId: currentProduct.userId, // Người bán
       products: [
         {
-          productId: product._id,
-          name: product.name,
-          quantity: product.quantity,
-          price: product.price,
-          image: product.images[0],
+          productId: currentProduct.id,
+          name: currentProduct.name,
+          quantity: 1,
+          price: currentProduct.price,
+          image: currentProduct.images[0],
         },
       ],
       totalAmount: total,
       status: "pending",
       shippingAddress: {
-        address: user.address, // Địa chỉ giao hàng
+        address: user.address, //làm lại cần kiểm tra phần địa chỉ giao hàng là user address hay đã thay đổi
         name: user.name,
         phone: user.phone,
       },
       paymentMethod: "tra sau",
       shippingPrice: shipping,
       taxPrice: 0,
-      totalPrice: product.price * product.quantity,
+      totalPrice: total,
       isPaid: false,
       paidAt: "",
       isDelivered: false,
       deliveredAt: "",
-    }));
+    };
 
-    // Gửi từng order lên server
-    const createdOrders = await Promise.all(
-      orders.map((order) => OrderService.createOrder(order))
-    );
+    console.log("currentOrder", currentOrder);
+    // Gửi dữ liệu đơn hàng lên server
+    const order = await OrderService.createOrder(currentOrder);
+    const quantity = currentOrder.products[0].quantity;
 
-    for (const product of selectedProducts) {
-      dispatch(removeProductFromCart(product._id));
-      const productGetFromServer = await ProductService.getDetailProduct(product._id);
-      console.log("stock of productGetFromServer", productGetFromServer.data.stock);
-      
-      if (product.quantity === productGetFromServer.data.stock) {
-        // await ProductService.deleteProduct(product._id);  
-    }else{
-      const updatedProduct = {
-        ...productGetFromServer.data,
-        stock: productGetFromServer.data.stock - product.quantity,
-      };
-      // await ProductService.updateProduct(product._id, updatedProduct);
-    }
+    if (quantity === currentProduct.stock) {
+      // ProductService.deleteProduct(currentProduct.id);
+      console.log("het hang");
     }
 
     alert("Thanh toán thành công!");
-
     navigate("/");
   };
 
@@ -194,7 +175,7 @@ const ShoppingCart = () => {
             backgroundColor: "#fff",
           }}
         >
-          <Title level={4}>Giỏ hàng của bạn</Title>
+          <Title level={4}>Thanh Toán</Title>
           <Text>Bạn có {products.length} sản phẩm trong giỏ hàng</Text>
           <Divider />
           <Checkbox checked={checkAll} onChange={handleCheckAll}>
@@ -273,4 +254,4 @@ const ShoppingCart = () => {
   );
 };
 
-export default ShoppingCart;
+export default ProductPayPage;

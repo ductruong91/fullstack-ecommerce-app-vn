@@ -10,6 +10,7 @@ import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import AdminPage from "../pages/AdminPage/AdminPage";
 import PostProductPage from "../pages/PostProductPage/PostProductPage";
 import ShoppingCartPage from "../pages/ShoppingCartPage/ShoppingCartPage";
+ import ProductPayPage from "../pages/ProductPayPage/ProductPayPage"
 
 export const routes = [
   {
@@ -72,6 +73,12 @@ export const routes = [
   {
     path: "/cart",
     page: ShoppingCartPage,
+    isShowHeader: true,
+  },
+
+  {
+    path: "/checkout",
+    page: ProductPayPage,
     isShowHeader: true,
   },
 

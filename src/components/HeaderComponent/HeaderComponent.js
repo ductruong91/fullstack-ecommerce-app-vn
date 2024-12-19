@@ -29,7 +29,7 @@ import { FaListAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as UserService from "../../service/UserService";
-import { resetUser } from "../../redux/slides/userSilde";
+import { resetUser } from "../../redux/slides/userSlide";
 import {
   clearFilters,
   removeFilter,

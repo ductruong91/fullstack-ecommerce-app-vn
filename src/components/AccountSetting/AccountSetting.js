@@ -5,6 +5,7 @@ import MyOrders from "./MyOrders/MyOrders";
 import MyProducts from "./MyProducts/MyProducts";
 import ChangePassword from "./ChangePassword/ChangePassword";
 import styled from "styled-components";
+import OrderDetail from "./MyOrders/OrderDetail";
 
 const ContentWrapper = styled.div`
   flex: 1;
@@ -18,6 +19,7 @@ const AccountSetting = () => {
       <Routes>
         <Route path="profile-account" element={<ProfileAccount />} />
         <Route path="my-orders" element={<MyOrders />} />
+        <Route path="my-orders/:id" element={<OrderDetail />} />
         <Route path="my-products" element={<MyProducts />} />
         <Route path="change-password" element={<ChangePassword />} />
       </Routes>

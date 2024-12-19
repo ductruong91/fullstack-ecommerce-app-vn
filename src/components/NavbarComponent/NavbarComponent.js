@@ -18,7 +18,7 @@ const NavbarComponent = () => {
       case "text":
         return option.map((option) => {
           return (
-            <div>
+            <div key={option.id}>
               <WrapperButtonNavbar key={option.id}>
                 <WrapperTextButtonNavbar>{option}</WrapperTextButtonNavbar>
               </WrapperButtonNavbar>

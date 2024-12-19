@@ -18,7 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { isJsonString } from "./ultils";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "./redux/slides/userSilde";
+import { updateUser } from "./redux/slides/userSlide";
 import * as UserService from "./service/UserService";
 
 function App() {

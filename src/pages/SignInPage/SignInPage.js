@@ -16,7 +16,7 @@ import * as UserService from "../../service/UserService";
 import * as message from "../../components/Message/Message";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
-import { updateUser } from "../../redux/slides/userSilde";
+import { updateUser } from "../../redux/slides/userSlide";
 
 const SignInPage = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);

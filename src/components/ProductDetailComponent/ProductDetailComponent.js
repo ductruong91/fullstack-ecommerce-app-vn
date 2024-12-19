@@ -1,4 +1,4 @@
-import { Col, Image, InputNumber, Row } from "antd";
+import { Col, Image, InputNumber, message, Row } from "antd";
 import React, { useEffect, useState } from "react";
 
 import imageProduct from "../../assets/images/cho.webp";
@@ -27,14 +27,27 @@ import { Button } from "@mui/material";
 import ButtonComponent from "../ButtonComponent/ButtonComponent";
 import * as ProductService from "../../service/ProductService";
 import { formatDistanceToNow } from "date-fns";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { addProductToCart } from "../../redux/slides/cartSlide";
+import { updateProduct } from "../../redux/slides/productSlide";
 
 const ProductDetailComponent = (idProduct) => {
-  const onChange = () => {};
+  const onChange = (value) => {
+    setQuantity(value);
+    console.log("quantity", value);
+  };
   // console.log("productId", idProduct);
-  const [bigImage, setBigImage] = useState();
+  const [quantity, setQuantity] = useState();
 
   const [productData, setProductData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const user = useSelector((state) => state.user);
+  const cart = useSelector((state) => state.cart);
+  const product = useSelector((state) => state.product);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
 
   // Hàm gọi API lấy thông tin sản phẩm
   const fetchProductDetail = async (id) => {
@@ -59,6 +72,13 @@ const ProductDetailComponent = (idProduct) => {
     }
   }, [idProduct]);
 
+  // useEffect(() => {
+  //   console.log("product on server", product); // kieemr tra
+  // }, [product]);
+  // useEffect(() => {
+  //   console.log("cart", cart); // kieemr tra
+  // }, [cart]);
+
   if (loading) {
     return <p>Đang tải thông tin sản phẩm...</p>; // Hiển thị trạng thái tải
   }
@@ -81,6 +101,35 @@ const ProductDetailComponent = (idProduct) => {
   } = productData; // Giải nén dữ liệu sản phẩm từ API
 
   console.log("product:", productData);
+
+  const handleAddProducttoCart = (product) => {
+    if (!user?.id) {
+      navigate("/sign-in", { state: location.pathname });
+    } else {
+      dispatch(
+        addProductToCart({
+          product,
+          quantity: quantity ? quantity : 1,
+          cartOwnerID: user.id,
+        })
+      );
+      // console.log("cart", cart);
+
+      navigate("/cart");
+    }
+  };
+
+  const handleBuyProduct = (product) => {
+    dispatch(updateProduct(product));
+    dispatch(
+      addProductToCart({
+        product,
+        quantity: quantity ? quantity : 1,
+        cartOwnerID: user.id,
+      })
+    );
+    navigate("/checkout");
+  };
 
   const timeAgo = updatedAt
     ? formatDistanceToNow(new Date(updatedAt))
@@ -170,8 +219,8 @@ const ProductDetailComponent = (idProduct) => {
           size="large"
           min={1}
           max={stock}
-          defaultValue={1}
-          onChange={onChange}
+          defaultValue={0}
+          onChange={(value) => onChange(value)}
         />
         <WrapperBuyButton>
           <ButtonComponent
@@ -188,6 +237,9 @@ const ProductDetailComponent = (idProduct) => {
               fontSize: "20px",
               fontWeight: "500",
             }}
+            onClick={() => {
+              handleBuyProduct(productData);
+            }}
           ></ButtonComponent>
 
           <ButtonComponent
@@ -203,6 +255,9 @@ const ProductDetailComponent = (idProduct) => {
               color: "rgb(13,92,182)",
               fontSize: "20px",
               fontWeight: "500",
+            }}
+            onClick={() => {
+              handleAddProducttoCart(productData);
             }}
           ></ButtonComponent>
         </WrapperBuyButton>

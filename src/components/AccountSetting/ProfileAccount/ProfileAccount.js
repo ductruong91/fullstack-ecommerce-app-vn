@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { updateUser } from "../../../redux/slides/userSilde";
+import { updateUser } from "../../../redux/slides/userSlide";
 import { Button, TextField } from "@mui/material";
 import * as UserService from "../../../service/UserService";
 
@@ -91,7 +91,6 @@ const ProfileAccount = () => {
       };
       reader.readAsDataURL(file);
     }
-    
   };
 
   const handleInputChange = (e) => {
