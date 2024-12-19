@@ -11,7 +11,9 @@ import {
   Modal,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-// import * as ProductService from "../../service/ProductService";
+import * as ProductService from "../../../service/ProductService";
+import useSelection from "antd/es/table/hooks/useSelection";
+import { useSelector } from "react-redux";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -24,13 +26,15 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const EditProductPage = ({ product, onSave, onDelete, onCancel }) => {
+const EditProductPage = ({ product, onSave, onCancel }) => {
   const [form] = Form.useForm();
   const [productData, setProductData] = useState(product || {});
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const user = useSelector((state) => state.user);
+  console.log("user hien tai", user);
 
   useEffect(() => {
     if (product) {
@@ -86,10 +90,9 @@ const EditProductPage = ({ product, onSave, onDelete, onCancel }) => {
 
   const confirmDelete = async () => {
     try {
-      await onDelete(productData._id);
+      await ProductService.deleteProduct(productData._id, user.access_token);
       message.success("Xóa sản phẩm thành công!");
-      setDeleteModalVisible(false);
-      onCancel();
+      // setDeleteModalVisible(false);
     } catch (error) {
       message.error("Có lỗi xảy ra khi xóa sản phẩm.");
     }
@@ -111,7 +114,7 @@ const EditProductPage = ({ product, onSave, onDelete, onCancel }) => {
   return (
     <Modal
       title="Chỉnh sửa sản phẩm"
-      visible={!!product}
+      open={!!product}
       onCancel={onCancel}
       footer={null}
     >
@@ -225,9 +228,13 @@ const EditProductPage = ({ product, onSave, onDelete, onCancel }) => {
 
       <Modal
         title="Xác nhận xóa sản phẩm"
-        visible={deleteModalVisible}
-        onOk={confirmDelete}
-        onCancel={() => setDeleteModalVisible(false)}
+        open={deleteModalVisible} // Sử dụng open thay vì visible
+        onOk={async () => {
+          setDeleteModalVisible(false);
+          await confirmDelete(); // Thực hiện hành động xóa
+          onCancel();
+        }}
+        onCancel={() => setDeleteModalVisible(false)} // Đóng modal khi hủy
         okText="Đồng ý"
         cancelText="Hủy"
       >

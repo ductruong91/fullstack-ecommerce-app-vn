@@ -22,10 +22,17 @@ const MyProduct = () => {
   };
 
   // Xử lý khi lưu dữ liệu chỉnh sửa
-  const handleSave = (updatedProduct) => {
+  const handleSave = async (updatedProduct) => {
     console.log("Dữ liệu chỉnh sửa:", updatedProduct);
+    const response = await ProductService.updateProduct(updatedProduct);
+
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product._id === updatedProduct._id ? updatedProduct : product
+      )
+    );
+
     setSelectedProduct(null); // Đóng modal sau khi lưu
-    
   };
 
   // Xử lý khi hủy chỉnh sửa

@@ -31,7 +31,6 @@ const Navigation = () => {
     "đồ điện tử",
     "thú cưng",
     "đồ gia dụng",
-    "thú cưng",
     "thời trang",
     "khác",
   ];

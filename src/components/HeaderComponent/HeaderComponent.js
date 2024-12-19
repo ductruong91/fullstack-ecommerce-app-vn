@@ -213,14 +213,14 @@ const HeaderComponent = () => {
             )}
           </WrapperHeaderAccount>
 
-          <WrapperListPostsIcon>
+          {/* <WrapperListPostsIcon>
             <div>
               <FaListAlt size="40px" />
             </div>
             <div>
               <span style={{ whiteSpace: "nowrap" }}>quan li bai dang</span>
             </div>
-          </WrapperListPostsIcon>
+          </WrapperListPostsIcon> */}
 
           <div>
             <Button
