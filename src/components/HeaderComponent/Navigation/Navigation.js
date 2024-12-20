@@ -37,16 +37,6 @@ const Navigation = () => {
   return (
     <div style={{ padding: "0 120px" }}>
       <WrapperTypeProduct>
-        {/* <ButtonComponent
-          size="large"
-          icon=<IoIosList />
-          styleButton={{
-            backgroundColor: "#2bbef9",
-            border: "none",
-          }}
-          bordered="false"
-          textButton="danh mục sản phẩm"
-        /> */}
         {arr.map((type) => {
           return (
             <Button

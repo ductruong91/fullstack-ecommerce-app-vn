@@ -12,6 +12,8 @@ import {
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import * as UserService from "../../../service/UserService";
+
+import * as OrderService from "../../../service/OrderService";
 import { updateOrder } from "../../../redux/slides/orderSlide";
 
 const { Content } = Layout;
@@ -61,8 +63,12 @@ const OrderDetail = () => {
   const fetchOrder = async () => {
     setIsLoading(true);
     try {
-      const responseBuy = await UserService.getDetailUser(order.buyerId);
-      const responseSell = await UserService.getDetailUser(order.sellerId);
+      const responseBuy = await UserService.getDetailUser(
+        order.buyerId._id ? order.buyerId._id : order.buyerId
+      );
+      const responseSell = await UserService.getDetailUser(
+        order.sellerId._id ? order.sellerId._id : order.sellerId
+      );
       const dataBuy = responseBuy.data;
       const dataSell = responseSell.data;
       console.log("data nguoi mua", dataBuy);
@@ -79,7 +85,25 @@ const OrderDetail = () => {
     fetchOrder();
   }, []);
 
-  const product = order.products[0]; // Order chỉ có 1 sản phẩm
+  let product;
+  if (Array.isArray(order.products)) {
+    product = order.products[0];
+  } else {
+    product = order.products; // Gán bằng đối tượng order.products bình thường }
+  }
+
+  console.log("product san pham trong order cần detail", product);
+
+  const handleCloseOrder = async () => {
+    const updatedOrder = {
+      ...order,
+      status: status,
+      buyerId: order.buyerId._id ? order.buyerId._id : order.buyerId,
+      sellerId: order.sellerId._id ? order.sellerId._id : order.sellerId,
+    };
+    await OrderService.updateOrder(updatedOrder);
+    navigate("/system/admin/order-management");
+  };
 
   return (
     <Layout>
@@ -101,12 +125,12 @@ const OrderDetail = () => {
             top: "16px",
             right: "16px",
           }}
-          onClick={() => navigate("/profile-user/my-order")} // Chuyển hướng đến trang khác
+          onClick={() => handleCloseOrder()} // Chuyển hướng đến trang khác
         >
           Đóng
         </Button>
 
-        {buyOrSell.id === "sellOrders" && (
+        {buyOrSell.id !== "buyOrders" && (
           <Dropdown menu={statusMenu} trigger={["click"]}>
             <Button type="primary" size="small">
               Thay đổi trạng thái

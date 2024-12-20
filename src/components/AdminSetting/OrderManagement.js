@@ -1,27 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Button, Space, Table, Image, Tag } from "antd";
+import { Button, Space, Table, Image, Tag, Modal } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import * as AdminService from "../../service/AdminService";
 import * as OrderService from "../../service/OrderService";
 import { useQuery } from "@tanstack/react-query";
 import { success, error } from "../Message/Message";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateOrder } from "../../redux/slides/orderSlide";
 
 const OrderManagement = () => {
   const [data, setData] = useState([]); // Dữ liệu đơn hàng
   const [orderToDelete, setOrderToDelete] = useState(null); // Đơn hàng cần xóa
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // Hiển thị modal xác nhận xóa
+  const order = useSelector((state) => state.order);
+  const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
   // Hàm lấy danh sách đơn hàng
   const fetchOrders = async () => {
-    const res = await OrderService.getAllOrder(); // Thay bằng API thực tế
+    const res = await OrderService.getAllOrderWithBuyerAndSellerInf(); // Thay bằng API thực tế
     setData(res.data);
     return res.data;
   };
+
+  useEffect(() => {
+    fetchOrders();
+    console.log("data orders", data);
+  }, []);
 
   useQuery({
     queryKey: ["orders"], // Tên query key
@@ -48,6 +55,20 @@ const OrderManagement = () => {
     } finally {
       setIsDeleteModalVisible(false);
     }
+  };
+
+  const handleDetailOrder = (order) => {
+    const updatedOrder = {
+      ...order,
+      products: order.products.map((product) => ({
+        ...product,
+        image: Array.isArray(product.image) ? product.image[0] : product.image,
+      })),
+    };
+    console.log("updatedOrder trong redux", updatedOrder);
+
+    dispatch(updateOrder(updatedOrder));
+    navigate(`/system/admin/order-management/detail-order/${order._id}`);
   };
 
   const handleCancelDelete = () => {
@@ -120,17 +141,13 @@ const OrderManagement = () => {
       render: (_, record) => (
         <Space size="middle">
           <a
-            onClick={() => navigate(`/order-detail/${record._id}`)} // Điều hướng đến trang chi tiết
+            // onClick={() => navigate(`/order-detail/${record._id}`)} // Điều hướng đến trang chi tiết
+            onClick={() => handleDetailOrder(record)}
             style={{ color: "blue" }}
           >
             <EyeOutlined /> Xem Chi Tiết
           </a>
-          <a
-            onClick={() => handleEditStatus(record)} // Hàm chỉnh sửa trạng thái
-            style={{ color: "orange" }}
-          >
-            <EditOutlined /> Chỉnh Sửa
-          </a>
+
           <a
             onClick={() => handleDelete(record)} // Hàm xóa
             style={{ color: "red" }}
@@ -155,6 +172,17 @@ const OrderManagement = () => {
         rowKey="_id"
         pagination={true}
       />
+
+      <Modal
+        title="Xác Nhận Xóa"
+        visible={isDeleteModalVisible}
+        onOk={confirmDelete}
+        onCancel={handleCancelDelete}
+        okText="Xóa"
+        cancelText="Hủy"
+      >
+        <p>Bạn có chắc chắn muốn xóa đơn hàng này không?</p>
+      </Modal>
     </div>
   );
 };

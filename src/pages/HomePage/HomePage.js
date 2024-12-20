@@ -92,58 +92,71 @@ const HomePage = () => {
         id="container"
         style={{
           backgroundColor: "rgb(245,245,250)",
-          padding: "0 120px",
+          padding: "30px 120px",
+          width: "100%",
+          margin: "0 auto",
         }}
       >
-        <SliderComponent arrImages={[slider1, slider2, slider3]} />
+        <div style={{
+         
+         
+          width: "60%",
+          margin: "0 auto",
+        }}>
+          <SliderComponent arrImages={[slider1, slider2, slider3]} />
 
-        {/* <WrapperNew> */}
-        <WrapperNewText>
-          <span>Tin dang moi</span>
-        </WrapperNewText>
+          <WrapperNew>
+          <WrapperNewText>
+            <span>Tin dang moi</span>
+          </WrapperNewText>
 
-        <WrapperProduct>
-          {products
-            ?.filter((product) => product.userId !== user.id)
-            ?.map((product) => {
-              return (
-                <CardComponent
-                  key={product._id}
-                  id={product._id}
-                  name={product.name}
-                  description={product.description}
-                  price={product.price}
-                  type={product.type}
-                  images={product.images}
-                  stock={product.stock}
-                  reviews={product.reviews}
-                  rating={product.rating}
-                  address={product.address}
-                  updatedAt={product.updatedAt}
-                />
-              );
-            })}
-        </WrapperProduct>
-        <div
-          style={{ display: "flex", margin: "10px", justifyContent: "center" }}
-        >
-          <div>
-            <ButtonComponent
-              textButton="xem them"
-              // type="outline"
-              onClick={handleLoadMore}
-              styleButton={{
-                border: "1px solid rgb(11, 116, 229)",
-                colors: "rgb(11, 116, 229)",
-                width: "240px",
-                height: "38px",
-              }}
-            />
+          <WrapperProduct>
+            {products
+              ?.filter((product) => product.userId !== user.id)
+              ?.map((product) => {
+                return (
+                  <CardComponent
+                    key={product._id}
+                    id={product._id}
+                    name={product.name}
+                    description={product.description}
+                    price={product.price}
+                    type={product.type}
+                    images={product.images}
+                    stock={product.stock}
+                    reviews={product.reviews}
+                    rating={product.rating}
+                    address={product.address}
+                    updatedAt={product.updatedAt}
+                  />
+                );
+              })}
+          </WrapperProduct>
+          <div
+            style={{
+              display: "flex",
+              margin: "10px",
+              justifyContent: "center",
+            }}
+          >
+            <div>
+              <ButtonComponent
+                textButton="xem them"
+                // type="outline"
+                onClick={handleLoadMore}
+                styleButton={{
+                  border: "1px solid rgb(11, 116, 229)",
+                  colors: "rgb(11, 116, 229)",
+                  width: "240px",
+                  height: "38px",
+                }}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* </WrapperNew> */}
-        <NavbarComponent />
+          </WrapperNew>
+          {/* <NavbarComponent /> */}
+        </div>
       </div>
     </>
   );

@@ -61,3 +61,10 @@ export const deleteOrder = async (id, access_token) => {
   );
   return res.data;
 };
+
+export const getAllOrderWithBuyerAndSellerInf = async () => {
+  const res = await axios.get(
+    `${process.env.REACT_APP_API_KEY}/order/get-all-order-populate`
+  );
+  return res.data;
+};

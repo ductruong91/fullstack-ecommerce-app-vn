@@ -7,6 +7,7 @@ import UserManagement from "./UserManagement";
 import OrderManagement from "./OrderManagement";
 import AddAdmin from "./AddAdmin";
 import ProductManagement from "./ProductManagement";
+import DetailOrder from "../../components/AccountSetting/MyOrders/OrderDetail";
 
 const AdminContent = () => {
   return (
@@ -16,6 +17,7 @@ const AdminContent = () => {
         <Route path="/user-management" element={<UserManagement />} />
         <Route path="/product-management" element={<ProductManagement />} />
         <Route path="/order-management" element={<OrderManagement />} />
+        <Route path="/order-management/detail-order/:id" element={<DetailOrder />} />
         <Route path="/add-admin" element={<AddAdmin />} />
       </Routes>
     </div>

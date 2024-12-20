@@ -23,12 +23,13 @@ export const WrapperNewText = styled.div`
   line-height: 1.41;
   letter-spacing: normal;
   color: rgb(34, 34, 34);
+  magin: 20px;
 `;
 
 export const WrapperProduct = styled.div`
-display: flex;
-justifyContent: center;
-gap: 15px;
-margin-top: 20px;
-flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
 `;
