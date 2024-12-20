@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Layout, List, Checkbox, Divider, Typography, Button } from "antd";
+import {
+  Layout,
+  List,
+  Checkbox,
+  Divider,
+  Typography,
+  Button,
+  Modal,
+  Input,
+} from "antd";
 import { DeleteOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { removeLastProduct } from "../../redux/slides/cartSlide";
@@ -29,7 +38,7 @@ const CartProduct = ({ product, onToggle, onDelete, checked }) => (
       style={{ marginRight: 10 }}
     />
     <img
-      src={product.image}
+      src={product.images[0]}
       alt={product.name}
       style={{
         width: 50,
@@ -128,7 +137,7 @@ const ProductPayPage = () => {
       totalAmount: total + shipping,
       status: "pending",
       shippingAddress: {
-        address: user.address, //làm lại cần kiểm tra phần địa chỉ giao hàng là user address hay đã thay đổi
+        address: address, //làm lại cần kiểm tra phần địa chỉ giao hàng là user address hay đã thay đổi
         name: user.name,
         phone: user.phone,
       },
@@ -148,26 +157,35 @@ const ProductPayPage = () => {
     const quantity = currentOrder.products[0].quantity;
 
     if (quantity === currentProduct.stock) {
-      ProductService.deleteProduct(currentProduct.id);
+      // ProductService.deleteProduct(currentProduct.id);
       console.log("het hang");
     } else {
-      // console.log(
-      //   "product cb update",
-      //   {
-      //     ...currentProduct,
-      //     stock: currentProduct.stock - quantity,
-      //   }.id
-      // );
-
       ProductService.updateProduct({
         ...currentProduct,
-        stock: currentProduct.stock - quantity,
+        stock: currentProduct.stock, //( -quantity mới đúng nhé)
         _id: currentProduct.id, //vi trong current khong co _id ma la id huhu :(((((())))))
       });
     }
 
     alert("Thanh toán thành công!");
     navigate("/");
+  };
+
+  const [address, setAddress] = useState(user.address);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newAddress, setNewAddress] = useState(user.address); // Ban đầu lấy từ user.address
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setAddress(newAddress); // Cập nhật địa chỉ
+    setIsModalVisible(false); // Đóng form
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false); // Đóng form mà không cập nhật
   };
 
   return (
@@ -232,9 +250,25 @@ const ProductPayPage = () => {
               style={{ fontSize: "20px", marginRight: "10px" }}
             />
             <div style={{ flex: 1 }}>
-              <Text>{user.address}</Text>
+              <Text>{address}</Text>
             </div>
-            <Button type="link">Thay đổi</Button>
+            <Button type="link" onClick={showModal}>
+              Thay đổi
+            </Button>
+            <Modal
+              title="Thay đổi địa chỉ"
+              open={isModalVisible}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              okText="Cập nhật"
+              cancelText="Hủy"
+            >
+              <Input
+                value={newAddress}
+                onChange={(e) => setNewAddress(e.target.value)}
+                placeholder="Nhập địa chỉ mới"
+              />
+            </Modal>
           </div>
           <Divider />
 

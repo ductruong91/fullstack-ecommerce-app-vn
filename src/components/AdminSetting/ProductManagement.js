@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Input, Space, Table } from "antd";
+import { Button, Image, Input, Space, Table } from "antd";
 import { DeleteOutlined, SearchOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import * as AdminService from "../../service/AdminService";
@@ -20,9 +20,9 @@ const ProductManagement = () => {
 
   //xu li get all User ra ngoai
   const fetchUserAll = async () => {
-    const res = await AdminService.getAllProduct();
+    const res = await AdminService.getAllProductForAdmin();
     console.log("res", res.data);
-    setData(res.data);
+    setData(res.data.reverse());
     return res.data;
   };
 
@@ -176,6 +176,25 @@ const ProductManagement = () => {
       },
       render: (text) => <a>{text}</a>,
     },
+
+    {
+      title: "Hình Ảnh",
+      dataIndex: ["images", 0], // Lấy ảnh sản phẩm đầu tiên
+      key: "images",
+      render: (url) =>
+        url ? (
+          <Image
+            src={url}
+            alt="product"
+            width={50}
+            height={50}
+            style={{ objectFit: "cover", borderRadius: "4px" }}
+          />
+        ) : (
+          "N/A"
+        ),
+    },
+
     {
       title: "Type",
       dataIndex: "type",
@@ -237,7 +256,7 @@ const ProductManagement = () => {
 
     try {
       await AdminService.deleteProduct(productToDelete._id, user.access_token);
-  
+
       setData((prevData) => prevData.filter((item) => item._id !== user._id));
 
       success(); // Hiển thị thông báo thành công
@@ -288,7 +307,7 @@ const ProductManagement = () => {
         <ProductDetailForm
           product={selectedProduct}
           setSelectedProduct={setSelectedProduct}
-          reqUser = {user}
+          reqUser={user}
         />
       )}
     </div>

@@ -24,7 +24,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { Button } from "antd";
 import FooterComponent from "../../components/FooterComponent/FooterComponent";
-const limit = 30;
+const limit = 12;
 
 const HomePage = () => {
   const filters = useSelector((state) => state.filter.filters); // Lấy filters từ Redux

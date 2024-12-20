@@ -140,133 +140,149 @@ const ProductDetailComponent = (idProduct) => {
     : "Đang cập nhật";
 
   return (
-    <Row style={{ padding: "16px" }}>
-      <Col span={10}>
-        <Image
-          src={images[0]}
-          alt="anh product"
-          preview="false"
-          style={{ borderRadius: "5px" }}
-        />
-        <Row
-          style={{ paddingTop: "10px", gap: "10px", justifyContent: "center" }}
-        >
-          {images.map((img, index) => (
-            <WrapperStyleCol span={4} key={index}>
-              <WrapperStyleImageSmall
-                src={img}
-                alt={`Ảnh nhỏ ${index + 1}`}
+    <>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <div>
+          <Row style={{ padding: "16px" }}>
+            <Col span={10}>
+              <Image
+                src={images[0]}
+                alt="anh product"
                 preview="false"
-                style={{
-                  width: "100%", // Đảm bảo ảnh vừa khung
-                  borderRadius: "5px",
-                  height: "80px", // Đặt kích thước cố định cho ảnh
-                  objectFit: "cover",
-                }}
+                style={{ borderRadius: "5px" }}
               />
-            </WrapperStyleCol>
-          ))}
-        </Row>
-      </Col>
-      <Col span={14} style={{ padding: "30px", gap: "10px" }}>
-        <WrapperStyleNameProduct>{name}</WrapperStyleNameProduct>
+              <Row
+                style={{
+                  paddingTop: "10px",
+                  gap: "10px",
+                  justifyContent: "center",
+                }}
+              >
+                {images.map((img, index) => (
+                  <WrapperStyleCol span={4} key={index}>
+                    <WrapperStyleImageSmall
+                      src={img}
+                      alt={`Ảnh nhỏ ${index + 1}`}
+                      preview="false"
+                      style={{
+                        width: "100%", // Đảm bảo ảnh vừa khung
+                        borderRadius: "5px",
+                        height: "80px", // Đặt kích thước cố định cho ảnh
+                        objectFit: "cover",
+                      }}
+                    />
+                  </WrapperStyleCol>
+                ))}
+              </Row>
+            </Col>
+            <Col span={14} style={{ padding: "30px", gap: "10px" }}>
+              <WrapperStyleNameProduct>{name}</WrapperStyleNameProduct>
 
-        <WrapperStyleStock>số lượng còn lại: {stock}</WrapperStyleStock>
+              <WrapperStyleStock>số lượng còn lại: {stock}</WrapperStyleStock>
 
-        <WrapperPrice>
-          {" "}
-          {typeof price === "number"
-            ? price.toLocaleString()
-            : Number(price).toLocaleString()}
-          đ
-        </WrapperPrice>
+              <WrapperPrice>
+                {" "}
+                {typeof price === "number"
+                  ? price.toLocaleString()
+                  : Number(price).toLocaleString()}
+                đ
+              </WrapperPrice>
 
-        <WrapperLocation>
-          <IoLocationOutline style={{ fontSize: "20px" }} />
-          <WrapperTextLocation>{address || owner?.address}</WrapperTextLocation>
-        </WrapperLocation>
+              <WrapperLocation>
+                <IoLocationOutline style={{ fontSize: "20px" }} />
+                <WrapperTextLocation>
+                  {address || owner?.address}
+                </WrapperTextLocation>
+              </WrapperLocation>
 
-        <WrapperTimePost>
-          <IoTimeOutline style={{ fontSize: "20px" }} />
-          <WrapperTextTimePost>{timeAgo}truoc</WrapperTextTimePost>
-        </WrapperTimePost>
+              <WrapperTimePost>
+                <IoTimeOutline style={{ fontSize: "20px" }} />
+                <WrapperTextTimePost>{timeAgo}truoc</WrapperTextTimePost>
+              </WrapperTimePost>
 
-        <WrapperUser>
-          <WrapperUserImage
-            src={owner?.avatar || "https://via.placeholder.com/50"}
-            alt="anh nho"
-            preview="false"
-            style={{
-              width: "50px",
-              height: "50px",
-              objectFit: "cover",
-              borderRadius: "5px",
-            }}
-          />
-          <WrapperUserName>{owner?.name}</WrapperUserName>
-          <div
-            style={{
-              width: "3px",
-              height: "100%",
-              backgroundColor: "#e8e8e8",
-            }}
-          ></div>
+              <WrapperUser>
+                <WrapperUserImage
+                  src={owner?.avatar || "https://via.placeholder.com/50"}
+                  alt="anh nho"
+                  preview="false"
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    objectFit: "cover",
+                    borderRadius: "5px",
+                  }}
+                />
+                <WrapperUserName>{owner?.name}</WrapperUserName>
+                <div
+                  style={{
+                    width: "3px",
+                    height: "100%",
+                    backgroundColor: "#e8e8e8",
+                  }}
+                ></div>
 
-          <WrapperUserNumberProduct>
-            {owner?.sold > 0 && `${owner.sold} sản phẩm đã bán`}
-          </WrapperUserNumberProduct>
-        </WrapperUser>
+                <WrapperUserNumberProduct>
+                  {owner?.sold > 0 && `${owner.sold} sản phẩm đã bán`}
+                </WrapperUserNumberProduct>
+              </WrapperUser>
 
-        <WrapperQualityNumber>so luong</WrapperQualityNumber>
+              <WrapperQualityNumber>so luong</WrapperQualityNumber>
 
-        <WrapperInputNumber
-          size="large"
-          min={1}
-          max={stock}
-          defaultValue={0}
-          onChange={(value) => onChange(value)}
-        />
-        <WrapperBuyButton>
-          <ButtonComponent
-            size={40}
-            styleButton={{
-              background: "rgb(255,57,69)",
-              height: "48px",
-              width: "220px",
-              borderRadius: "4px",
-            }}
-            textButton={"chon mua"}
-            styleTextButton={{
-              color: "#fff",
-              fontSize: "20px",
-              fontWeight: "500",
-            }}
-            onClick={() => {
-              handleBuyProduct(productData);
-            }}
-          ></ButtonComponent>
+              <WrapperInputNumber
+                size="large"
+                min={1}
+                max={stock}
+                defaultValue={0}
+                onChange={(value) => onChange(value)}
+              />
+              <WrapperBuyButton>
+                <ButtonComponent
+                  size={40}
+                  styleButton={{
+                    background: "rgb(255,57,69)",
+                    height: "48px",
+                    width: "220px",
+                    borderRadius: "4px",
+                  }}
+                  textButton={"chon mua"}
+                  styleTextButton={{
+                    color: "#fff",
+                    fontSize: "20px",
+                    fontWeight: "500",
+                  }}
+                  onClick={() => {
+                    handleBuyProduct(productData);
+                  }}
+                ></ButtonComponent>
 
-          <ButtonComponent
-            size={40}
-            styleButton={{
-              background: "#fff",
-              height: "48px",
-              width: "220px",
-              borderRadius: "4px",
-            }}
-            textButton={"Them vao gio hang"}
-            styleTextButton={{
-              color: "rgb(13,92,182)",
-              fontSize: "20px",
-              fontWeight: "500",
-            }}
-            onClick={() => {
-              handleAddProducttoCart(productData);
-            }}
-          ></ButtonComponent>
-        </WrapperBuyButton>
-      </Col>
-    </Row>
+                <ButtonComponent
+                  size={40}
+                  styleButton={{
+                    background: "#fff",
+                    height: "48px",
+                    width: "220px",
+                    borderRadius: "4px",
+                  }}
+                  textButton={"Them vao gio hang"}
+                  styleTextButton={{
+                    color: "rgb(13,92,182)",
+                    fontSize: "20px",
+                    fontWeight: "500",
+                  }}
+                  onClick={() => {
+                    handleAddProducttoCart(productData);
+                  }}
+                ></ButtonComponent>
+              </WrapperBuyButton>
+            </Col>
+          </Row>
+        </div>
+        <div style={{ padding: "20px 50px" }}>
+          <WrapperQualityNumber>mô tả sản phẩm:</WrapperQualityNumber>
+          <WrapperTextLocation>{description}</WrapperTextLocation>
+        </div>
+      </div>
+    </>
   );
 };
 

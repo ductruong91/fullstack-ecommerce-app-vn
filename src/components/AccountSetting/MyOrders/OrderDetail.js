@@ -102,7 +102,7 @@ const OrderDetail = () => {
       sellerId: order.sellerId._id ? order.sellerId._id : order.sellerId,
     };
     await OrderService.updateOrder(updatedOrder);
-    navigate("/system/admin/order-management");
+    navigate("/profile-user/my-order");
   };
 
   return (

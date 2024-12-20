@@ -8,6 +8,7 @@ const initialState = {
   address: "",
   avatar: "",
   id: "",
+  password: "",
   access_token: "",
 };
 
@@ -24,6 +25,7 @@ export const userSlice = createSlice({
         avatar = "",
         address = "",
         role = "",
+        password = "",
         access_token,
       } = action.payload;
       console.log("action", action);
@@ -34,6 +36,7 @@ export const userSlice = createSlice({
       state.avatar = avatar;
       state.id = _id;
       state.role = role;
+      state.password = password;
       state.access_token = access_token;
     },
     resetUser: (state) => {

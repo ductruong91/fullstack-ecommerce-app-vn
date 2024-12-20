@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Layout, List, Checkbox, Divider, Typography, Button } from "antd";
+import { Layout, List, Checkbox, Divider, Typography, Button, Modal, Input } from "antd";
 import { DeleteOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { removeProductFromCart } from "../../redux/slides/cartSlide";
@@ -29,7 +29,7 @@ const CartProduct = ({ product, onToggle, onDelete, checked }) => (
       style={{ marginRight: 10 }}
     />
     <img
-      src={product.image}
+      src={product.images[0]}
       alt={product.name}
       style={{
         width: 50,
@@ -138,7 +138,7 @@ const ShoppingCart = () => {
       totalAmount: total + shipping,
       status: "pending",
       shippingAddress: {
-        address: user.address, // Địa chỉ giao hàng
+        address: address, // Địa chỉ giao hàng
         name: user.name,
         phone: user.phone,
       },
@@ -182,6 +182,25 @@ const ShoppingCart = () => {
 
     navigate("/");
   };
+
+
+
+    const [address, setAddress] = useState(user.address);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [newAddress, setNewAddress] = useState(user.address); // Ban đầu lấy từ user.address
+  
+    const showModal = () => {
+      setIsModalVisible(true);
+    };
+  
+    const handleOk = () => {
+      setAddress(newAddress); // Cập nhật địa chỉ
+      setIsModalVisible(false); // Đóng form
+    };
+  
+    const handleCancel = () => {
+      setIsModalVisible(false); // Đóng form mà không cập nhật
+    };
 
   return (
     <Layout style={{ padding: "20px", height: "100vh" }}>
@@ -247,7 +266,24 @@ const ShoppingCart = () => {
             <div style={{ flex: 1 }}>
               <Text>{user.address}</Text>
             </div>
-            <Button type="link">Thay đổi</Button>
+            <Button type="link" onClick={showModal}>
+              Thay đổi
+            </Button>
+
+            <Modal
+              title="Thay đổi địa chỉ"
+              open={isModalVisible}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              okText="Cập nhật"
+              cancelText="Hủy"
+            >
+              <Input
+                value={newAddress}
+                onChange={(e) => setNewAddress(e.target.value)}
+                placeholder="Nhập địa chỉ mới"
+              />
+            </Modal>
           </div>
           <Divider />
 

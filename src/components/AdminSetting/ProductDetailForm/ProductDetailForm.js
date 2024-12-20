@@ -4,18 +4,16 @@ import { LeftOutlined } from "@ant-design/icons";
 import * as UserService from "../../../service/UserService";
 
 const ProductDetailForm = ({ product, setSelectedProduct, reqUser }) => {
-  const { name, type, description, price, stock, address, image, userId } =
+  const { name, type, description, price, stock, address, images, userId } =
     product;
   const [currentIndex, setCurrentIndex] = useState(0); // Để điều chỉnh vị trí ảnh hiện tại
-  const images = image ? image : []; // Mảng ảnh, nếu không có thì sử dụng mảng rỗng
+  const imagesRender = images ? images : []; // Mảng ảnh, nếu không có thì sử dụng mảng rỗng
   const maxImagesToShow = 3; // Số lượng ảnh tối đa hiển thị
   const [owner, setOwner] = useState(null); // Thông tin người chủ sở hữu
   const [isLoading, setIsLoading] = useState(true); // Trạng thái loading của chủ sở hữu
 
   // Tìm thông tin người dùng dựa trên userId
   useEffect(() => {
-    // Định nghĩa hàm async bên trong useEffect
-    // Hàm lấy thông tin chủ sở hữu của sản phẩm
     const fetchUserData = async () => {
       if (userId) {
         try {
@@ -74,7 +72,7 @@ const ProductDetailForm = ({ product, setSelectedProduct, reqUser }) => {
           >
             <Avatar
               size={64}
-              src={images.length > 0 ? images[0] : undefined}
+              src={imagesRender.length > 0 ? imagesRender[0] : undefined}
               style={{ borderRadius: "8px" }}
             />
             <div style={{ marginLeft: "20px" }}>
@@ -105,7 +103,7 @@ const ProductDetailForm = ({ product, setSelectedProduct, reqUser }) => {
           <div style={{ marginTop: "20px" }}>
             <strong>Images:</strong>
             <div style={{ display: "flex", marginTop: "10px" }}>
-              {images
+              {imagesRender
                 .slice(currentIndex, currentIndex + maxImagesToShow)
                 .map((img, index) => (
                   <div
@@ -131,7 +129,7 @@ const ProductDetailForm = ({ product, setSelectedProduct, reqUser }) => {
                 ))}
             </div>
             {/* Nếu có nhiều ảnh, hiển thị nút "Xem thêm" */}
-            {images.length > maxImagesToShow && (
+            {imagesRender.length > maxImagesToShow && (
               <Space style={{ marginTop: "10px" }}>
                 {currentIndex > 0 && (
                   <Button
@@ -142,7 +140,7 @@ const ProductDetailForm = ({ product, setSelectedProduct, reqUser }) => {
                     Prev
                   </Button>
                 )}
-                {currentIndex + maxImagesToShow < images.length && (
+                {currentIndex + maxImagesToShow < imagesRender.length && (
                   <Button size="small" onClick={handleNextImage}>
                     Next
                   </Button>
