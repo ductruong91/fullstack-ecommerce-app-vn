@@ -27,6 +27,7 @@ const limit = 30;
 
 const HomePage = () => {
   const filters = useSelector((state) => state.filter.filters); // Lấy filters từ Redux
+  const user = useSelector((state) => state.user);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -102,24 +103,26 @@ const HomePage = () => {
         </WrapperNewText>
 
         <WrapperProduct>
-          {products?.map((product) => {
-            return (
-              <CardComponent
-                key={product._id}
-                id={product._id}
-                name={product.name}
-                description={product.description}
-                price={product.price}
-                type={product.type}
-                images={product.images}
-                stock={product.stock}
-                reviews={product.reviews}
-                rating={product.rating}
-                address={product.address}
-                updatedAt={product.updatedAt}
-              />
-            );
-          })}
+          {products
+            ?.filter((product) => product.userId !== user.id)
+            ?.map((product) => {
+              return (
+                <CardComponent
+                  key={product._id}
+                  id={product._id}
+                  name={product.name}
+                  description={product.description}
+                  price={product.price}
+                  type={product.type}
+                  images={product.images}
+                  stock={product.stock}
+                  reviews={product.reviews}
+                  rating={product.rating}
+                  address={product.address}
+                  updatedAt={product.updatedAt}
+                />
+              );
+            })}
         </WrapperProduct>
         <div
           style={{ display: "flex", margin: "10px", justifyContent: "center" }}

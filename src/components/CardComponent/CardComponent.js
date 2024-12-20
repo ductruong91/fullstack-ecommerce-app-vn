@@ -49,6 +49,7 @@ const CardComponent = (props) => {
       onClick={() => (onClick ? onClick() : handleDetailProduct(id))}
     >
       <StyleNameProduct>{name}</StyleNameProduct>
+      <WrapperTimePostText>còn lại: {stock}</WrapperTimePostText>
       <WrapperPriceText>
         {typeof price === "number"
           ? price.toLocaleString()

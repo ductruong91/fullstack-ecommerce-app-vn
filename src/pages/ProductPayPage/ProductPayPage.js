@@ -125,7 +125,7 @@ const ProductPayPage = () => {
           type: currentProduct.type || "",
         },
       ],
-      totalAmount: total+shipping,
+      totalAmount: total + shipping,
       status: "pending",
       shippingAddress: {
         address: user.address, //làm lại cần kiểm tra phần địa chỉ giao hàng là user address hay đã thay đổi
@@ -148,8 +148,22 @@ const ProductPayPage = () => {
     const quantity = currentOrder.products[0].quantity;
 
     if (quantity === currentProduct.stock) {
-      // ProductService.deleteProduct(currentProduct.id);
+      ProductService.deleteProduct(currentProduct.id);
       console.log("het hang");
+    } else {
+      // console.log(
+      //   "product cb update",
+      //   {
+      //     ...currentProduct,
+      //     stock: currentProduct.stock - quantity,
+      //   }.id
+      // );
+
+      ProductService.updateProduct({
+        ...currentProduct,
+        stock: currentProduct.stock - quantity,
+        _id: currentProduct.id, //vi trong current khong co _id ma la id huhu :(((((())))))
+      });
     }
 
     alert("Thanh toán thành công!");
