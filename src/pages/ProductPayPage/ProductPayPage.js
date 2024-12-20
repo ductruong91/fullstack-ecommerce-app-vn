@@ -121,10 +121,11 @@ const ProductPayPage = () => {
           name: currentProduct.name,
           quantity: 1,
           price: currentProduct.price,
-          image: currentProduct.images[0],
+          image: currentProduct.images?.[0] || "",
+          type: currentProduct.type || "",
         },
       ],
-      totalAmount: total,
+      totalAmount: total+shipping,
       status: "pending",
       shippingAddress: {
         address: user.address, //làm lại cần kiểm tra phần địa chỉ giao hàng là user address hay đã thay đổi

@@ -237,8 +237,7 @@ const ProductManagement = () => {
 
     try {
       await AdminService.deleteProduct(productToDelete._id, user.access_token);
-      // Giả sử xóa thành công
-      // Cập nhật lại state dữ liệu người dùng, loại bỏ người dùng vừa xóa
+  
       setData((prevData) => prevData.filter((item) => item._id !== user._id));
 
       success(); // Hiển thị thông báo thành công

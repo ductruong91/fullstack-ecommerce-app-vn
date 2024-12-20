@@ -27,12 +27,15 @@ export const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    addOrderProduct: (state, action) => {},
+    updateOrder: (state, action) => {
+      // console.log("action", action.payload);
+      return action.payload;
+    },
     resetOrder: (state) => {},
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addOrderProduct, resetUser } = orderSlice.actions;
+export const { updateOrder, resetOrder } = orderSlice.actions;
 
 export default orderSlice.reducer;

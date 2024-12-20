@@ -1,53 +1,88 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, List, Typography, Dropdown, Menu, Button } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import * as OrderService from "../../../service/OrderService";
+import { updateOrder } from "../../../redux/slides/orderSlide";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
 const MyOrders = () => {
   const [activeTab, setActiveTab] = useState("buyOrders"); // Tab đang hoạt động
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const [buyOrder, setBuyOrder] = useState([]);
+  const [sellOrder, setSellOrder] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState("");
+  const order = useSelector((state) => state.order);
+
+  useEffect(() => {
+    setStatus(order.status); // Cập nhật trạng thái khi order thay đổi
+  }, [order.status]); // Chỉ chạy khi order.status thay đổi
+
+  console.log("order trong bo nho bd", order);
+
+  const fetchBuyOrder = async () => {
+    setIsLoading(true);
+    try {
+      const responseBuy = await OrderService.getBuyUserOrders(user.id);
+      const responseSell = await OrderService.getSellUserOrders(user.id);
+      const dataBuy = responseBuy.data;
+      const dataSell = responseSell.data;
+      console.log("data buy sau khi get", dataBuy);
+      console.log("data sell sau khi get", dataSell);
+      setBuyOrder(dataBuy);
+      setSellOrder(dataSell);
+    } catch (error) {
+      console.error("Error fetching order:", error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchBuyOrder();
+  }, []);
+
   const navigate = useNavigate();
 
   // Dữ liệu mẫu
-  const buyOrders = [
-    {
-      id: "1",
-      productImage: "https://via.placeholder.com/100",
-      productName: "Product A",
-      productType: "Type A",
-      quantity: 2,
-      totalPrice: 200000,
-      status: "Pending",
-    },
-  ];
-
-  const sellOrders = [
-    {
-      id: "2",
-      productImage: "https://via.placeholder.com/100",
-      productName: "Product B",
-      productType: "Type B",
-      quantity: 1,
-      totalPrice: 100000,
-      status: "Completed",
-    },
-  ];
 
   // Dữ liệu hiển thị theo tab
-  const orders = activeTab === "buyOrders" ? buyOrders : sellOrders;
+  const orders = activeTab === "buyOrders" ? buyOrder : sellOrder;
+
+  const [visibleCount, setVisibleCount] = useState(10); // Số lượng order hiển thị ban đầu
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 10); // Hiển thị thêm 10 order
+  };
+
+  const visibleOrders = [...orders].reverse().slice(0, visibleCount); // Đảo ngược và lấy số lượng hiển thị
+
+  const handleDetailOrder = (currentOrder, BuyOrSell) => {
+    dispatch(updateOrder(currentOrder));
+    console.log("currentOrder", currentOrder);
+
+    navigate(`/profile-user/my-orders/${BuyOrSell}`);
+  };
+  const handleSetStatus = (newStatus) => {
+    console.log("Trạng thái mới:", newStatus);
+    setStatus(newStatus); // Cập nhật trạng thái
+  };
 
   // Menu thay đổi trạng thái order
-  const statusMenu = (
-    <Menu>
-      <Menu.Item key="pending">Pending</Menu.Item>
-      <Menu.Item key="completed">Completed</Menu.Item>
-      <Menu.Item key="cancelled">Cancelled</Menu.Item>
-    </Menu>
-  );
+  const statusMenu = {
+    items: [
+      { key: "Pending", label: "Pending" },
+      { key: "Completed", label: "Completed" },
+      { key: "Cancelled", label: "Cancelled" },
+    ],
+    onClick: ({ key }) => handleSetStatus(key), // Gọi hàm setStatus với trạng thái được chọn
+  };
 
   // Component hiển thị một order
-  const OrderItem = ({ order }) => (
+  const OrderItem = ({ order, buyOrSell }) => (
     <div
       style={{
         border: "1px solid #ddd",
@@ -78,52 +113,45 @@ const MyOrders = () => {
           e.currentTarget.parentElement.style.boxShadow =
             "0 2px 5px rgba(0, 0, 0, 0.1)";
         }}
-        onClick={() => navigate(`/profile-user/my-orders/${order.id}`)}
+        onClick={() => handleDetailOrder(order, buyOrSell)}
       >
-        {/* Ảnh sản phẩm */}
-        <img
-          src={order.productImage}
-          alt={order.productName}
-          style={{ width: "120px", height: "120px", borderRadius: "8px" }}
-        />
-        {/* Thông tin sản phẩm */}
-        <div style={{ flex: 1, marginLeft: "16px" }}>
-          <Title level={5}>{order.productName}</Title>
-          <Text type="secondary">{order.productType}</Text>
-          <br />
-          <Text>Số lượng: {order.quantity}</Text>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+            flex: 1,
+          }}
+        >
+          {/* Ảnh sản phẩm */}
+          <img
+            src={order.products[0].image}
+            alt={order.products[0].name}
+            style={{ width: "120px", height: "120px", borderRadius: "8px" }}
+          />
+          {/* Thông tin sản phẩm */}
+          <div style={{ flex: 1, marginLeft: "16px" }}>
+            <Title level={5}>{order.products[0].name}</Title>
+            <Text type="secondary">{order.products[0].type}</Text>
+            <br />
+            <Text>Số lượng: {order.products[0].quantity}</Text>
+          </div>
         </div>
+
         {/* Tổng tiền */}
         <div style={{ textAlign: "right", minWidth: "200px" }}>
           <Title level={4} style={{ color: "red" }}>
-            {order.totalPrice.toLocaleString()} VND
+            {order.totalAmount.toLocaleString()} VND
           </Title>
           <Text>{order.status}</Text>
         </div>
       </div>
-
-      {/* Phần dưới */}
-      {activeTab === "sellOrders" && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            marginTop: "8px",
-          }}
-        >
-          <Dropdown overlay={statusMenu} trigger={["click"]}>
-            <Button type="primary" size="small">
-              Thay đổi trạng thái
-            </Button>
-          </Dropdown>
-        </div>
-      )}
     </div>
   );
 
   return (
     <Layout>
-      <Content style={{ padding: "16px", maxWidth: "100%", margin: "auto" }}>
+      <Content style={{ padding: "16px", maxWidth: "100%", margin: "50px" }}>
         {/* Tabs dạng dòng chữ */}
         <div
           style={{
@@ -163,9 +191,20 @@ const MyOrders = () => {
 
         {/* Danh sách order */}
         <List
-          dataSource={orders}
-          renderItem={(order) => <OrderItem order={order} />}
+          dataSource={visibleOrders}
+          renderItem={(order) => (
+            <OrderItem order={order} buyOrSell={activeTab} />
+          )}
         />
+
+        {/* Nút "Xem thêm" */}
+        {visibleCount < orders.length && (
+          <div style={{ textAlign: "center", marginTop: "16px" }}>
+            <Button type="primary" onClick={handleLoadMore}>
+              Xem thêm
+            </Button>
+          </div>
+        )}
       </Content>
     </Layout>
   );

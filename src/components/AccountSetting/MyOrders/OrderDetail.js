@@ -1,51 +1,83 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import { Layout, Typography, Divider, Row, Col, Card } from "antd";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  Layout,
+  Typography,
+  Divider,
+  Row,
+  Col,
+  Card,
+  Button,
+  Dropdown,
+} from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import * as UserService from "../../../service/UserService";
+import { updateOrder } from "../../../redux/slides/orderSlide";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
+const statusMapping = {
+  completed: "Đã xong",
+  pending: "Đang chuẩn bị",
+  cancelled: "Bị hủy",
+};
 
 const OrderDetail = () => {
+  const buyOrSell = useParams();
+  const dispatch = useDispatch();
   const { id } = useParams(); // Lấy ID order từ URL
+  const navigate = useNavigate(); // Điều hướng trang
+  const order = useSelector((state) => state.order);
+  console.log("orders se render", order);
+  const [buyer, setBuyer] = useState({});
+  const [seller, setSeller] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Dữ liệu mẫu
-  const order = {
-    id,
-    buyerId: {
-      name: "Nguyễn Văn A",
-      email: "nguyenvana@example.com",
-      phone: "0123456789",
-    },
-    sellerId: {
-      name: "Trần Thị B",
-      email: "tranthib@example.com",
-      phone: "0987654321",
-    },
-    products: [
-      {
-        productId: "1",
-        name: "Product A",
-        quantity: 2,
-        price: 200000,
-        image: "https://via.placeholder.com/150",
-      },
-    ],
-    totalAmount: 400000,
-    status: "Pending",
-    shippingAddress: {
-      name: "Nguyễn Văn A",
-      phone: "0123456789",
-      address: "123 ABC Street, Hà Nội",
-    },
-    paymentMethod: "Tra sau",
-    shippingPrice: 30000,
-    taxPrice: 20000,
-    totalPrice: 450000,
-    isPaid: false,
-    paidAt: null,
-    isDelivered: false,
-    deliveredAt: null,
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    setStatus(order.status); // Cập nhật trạng thái khi order thay đổi
+    console.log("buyorsell", buyOrSell);
+  }, [order.status]); // Chỉ chạy khi order.status thay đổi
+
+  console.log("status ban dau", statusMapping[status]);
+
+  const handleSetStatus = (newStatus) => {
+    console.log("Trạng thái mới:", newStatus);
+    setStatus(newStatus); // Cập nhật trạng thái
+    dispatch(updateOrder({ ...order, status: newStatus })); // Cập nhật trạng thái order
   };
+
+  // Menu thay đổi trạng thái order
+  const statusMenu = {
+    items: [
+      { key: "pending", label: "đang chuẩn bị" },
+      { key: "completed", label: "hoàn thành đơn hàng" },
+      { key: "cancelled", label: "hủy đơn hàng" },
+    ],
+    onClick: ({ key }) => handleSetStatus(key), // Gọi hàm setStatus với trạng thái được chọn
+  };
+
+  const fetchOrder = async () => {
+    setIsLoading(true);
+    try {
+      const responseBuy = await UserService.getDetailUser(order.buyerId);
+      const responseSell = await UserService.getDetailUser(order.sellerId);
+      const dataBuy = responseBuy.data;
+      const dataSell = responseSell.data;
+      console.log("data nguoi mua", dataBuy);
+      console.log("data nguoi ban", dataSell);
+      setBuyer(dataBuy);
+      setSeller(dataSell);
+    } catch (error) {
+      console.error("Error fetching order:", error);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchOrder();
+  }, []);
 
   const product = order.products[0]; // Order chỉ có 1 sản phẩm
 
@@ -58,8 +90,30 @@ const OrderDetail = () => {
           margin: "auto",
           backgroundColor: "#fff",
           borderRadius: "8px",
+          position: "relative", // Để căn chỉnh nút "Đóng"
         }}
       >
+        {/* Nút đóng */}
+        <Button
+          type="primary"
+          style={{
+            position: "absolute",
+            top: "16px",
+            right: "16px",
+          }}
+          onClick={() => navigate("/profile-user/my-order")} // Chuyển hướng đến trang khác
+        >
+          Đóng
+        </Button>
+
+        {buyOrSell.id === "sellOrders" && (
+          <Dropdown menu={statusMenu} trigger={["click"]}>
+            <Button type="primary" size="small">
+              Thay đổi trạng thái
+            </Button>
+          </Dropdown>
+        )}
+
         {/* Tiêu đề */}
         <Title level={3} style={{ textAlign: "center", marginBottom: "16px" }}>
           Chi tiết Order
@@ -71,15 +125,15 @@ const OrderDetail = () => {
             <Card bordered>
               <Title level={5}>Người Mua</Title>
               <Text>
-                <strong>Tên:</strong> {order.buyerId.name}
+                <strong>Tên:</strong> {buyer.name}
               </Text>
               <br />
               <Text>
-                <strong>Email:</strong> {order.buyerId.email}
+                <strong>Email:</strong> {buyer.email}
               </Text>
               <br />
               <Text>
-                <strong>Số điện thoại:</strong> {order.buyerId.phone}
+                <strong>Số điện thoại:</strong> {buyer.phone}
               </Text>
             </Card>
           </Col>
@@ -87,15 +141,15 @@ const OrderDetail = () => {
             <Card bordered>
               <Title level={5}>Người Bán</Title>
               <Text>
-                <strong>Tên:</strong> {order.sellerId.name}
+                <strong>Tên:</strong> {seller.name}
               </Text>
               <br />
               <Text>
-                <strong>Email:</strong> {order.sellerId.email}
+                <strong>Email:</strong> {seller.email}
               </Text>
               <br />
               <Text>
-                <strong>Số điện thoại:</strong> {order.sellerId.phone}
+                <strong>Số điện thoại:</strong> {seller.phone}
               </Text>
             </Card>
           </Col>
@@ -124,7 +178,7 @@ const OrderDetail = () => {
             <br />
             <Text>
               <strong>Tổng tiền sản phẩm:</strong>{" "}
-              {(product.quantity * product.price).toLocaleString()} VND
+              {order.totalPrice.toLocaleString()} VND
             </Text>
           </Col>
         </Row>
@@ -159,8 +213,7 @@ const OrderDetail = () => {
               </Text>
               <br />
               <Text>
-                <strong>Trạng thái giao hàng:</strong>{" "}
-                {order.isDelivered ? "Đã giao" : "Chưa giao"}
+                <strong>Trạng thái đơn hàng:</strong> {statusMapping[status]}
               </Text>
             </Col>
           </Row>
@@ -178,7 +231,7 @@ const OrderDetail = () => {
           </Text>
           <br />
           <Title level={4} style={{ color: "red", marginTop: "16px" }}>
-            Tổng cộng: {order.totalPrice.toLocaleString()} VND
+            Tổng cộng: {order.totalAmount.toLocaleString()} VND
           </Title>
         </Card>
       </Content>

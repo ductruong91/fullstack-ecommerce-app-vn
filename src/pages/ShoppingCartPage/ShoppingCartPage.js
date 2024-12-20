@@ -128,10 +128,11 @@ const ShoppingCart = () => {
           name: product.name,
           quantity: product.quantity,
           price: product.price,
-          image: product.images[0],
+          image: product.images?.[0] || "",
+          type: product.type || "",
         },
       ],
-      totalAmount: total,
+      totalAmount: total + shipping,
       status: "pending",
       shippingAddress: {
         address: user.address, // Địa chỉ giao hàng
@@ -155,18 +156,23 @@ const ShoppingCart = () => {
 
     for (const product of selectedProducts) {
       dispatch(removeProductFromCart(product._id));
-      const productGetFromServer = await ProductService.getDetailProduct(product._id);
-      console.log("stock of productGetFromServer", productGetFromServer.data.stock);
-      
+      const productGetFromServer = await ProductService.getDetailProduct(
+        product._id
+      );
+      console.log(
+        "stock of productGetFromServer",
+        productGetFromServer.data.stock
+      );
+
       if (product.quantity === productGetFromServer.data.stock) {
-        // await ProductService.deleteProduct(product._id);  
-    }else{
-      const updatedProduct = {
-        ...productGetFromServer.data,
-        stock: productGetFromServer.data.stock - product.quantity,
-      };
-      // await ProductService.updateProduct(product._id, updatedProduct);
-    }
+        // await ProductService.deleteProduct(product._id);
+      } else {
+        const updatedProduct = {
+          ...productGetFromServer.data,
+          stock: productGetFromServer.data.stock - product.quantity,
+        };
+        // await ProductService.updateProduct(product._id, updatedProduct);
+      }
     }
 
     alert("Thanh toán thành công!");

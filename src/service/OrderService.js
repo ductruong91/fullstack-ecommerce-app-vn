@@ -35,7 +35,7 @@ export const getBuyUserOrders = async (id) => {
 //id nguoi ban
 export const getSellUserOrders = async (id) => {
   const res = await axios.get(
-    `${process.env.REACT_APP_API_KEY}/get-sell-user-order/${id}`
+    `${process.env.REACT_APP_API_KEY}/order/get-sell-user-order/${id}`
   );
   return res.data;
 };
