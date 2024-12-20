@@ -1,12 +1,23 @@
 import React from "react";
-import ButtonComponent from "../../ButtonComponent/ButtonComponent";
-import { IoIosList } from "react-icons/io";
-import { WrapperTypeProduct } from "../../../pages/HomePage/style";
-import TypeProduct from "../../TypeProduct/TypeProduct";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFilter, setFilter } from "../../../redux/slides/filterSlide";
-import { Button } from "antd";
-
+import { WrapperTypeProduct } from "../../../pages/HomePage/style";
+import TypeButton from "./TypeButton";
+import {
+  IoIosList,
+  IoMdCar,
+  IoMdConstruct,
+  IoMdPaw,
+  IoMdHome,
+  IoMdShirt,
+  IoMdOptions,
+} from "react-icons/io"; // Import các icon
+import { LuMonitorSmartphone } from "react-icons/lu";
+import { LuSofa } from "react-icons/lu";
+import { PiDogBold } from "react-icons/pi";
+import { RiShirtLine } from "react-icons/ri";
+import { LuRectangleEllipsis } from "react-icons/lu";
+import { PiStudentBold } from "react-icons/pi";
 const Navigation = () => {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filter.filters);
@@ -26,32 +37,34 @@ const Navigation = () => {
   };
 
   const arr = [
-    "thiết bị học tập chuyên dụng",
-    "xe cộ",
-    "đồ điện tử",
-    "thú cưng",
-    "đồ gia dụng",
-    "thời trang",
-    "khác",
+    { type: "thiết bị học tập chuyên dụng", icon: <PiStudentBold size={40} /> },
+    { type: "xe cộ", icon: <IoMdCar size={40} /> },
+    { type: "đồ điện tử", icon: <LuMonitorSmartphone size={40} /> },
+    { type: "thú cưng", icon: <PiDogBold size={40} /> },
+    { type: "đồ gia dụng", icon: <LuSofa size={40} /> },
+    { type: "thời trang", icon: <RiShirtLine size={40} /> },
+    { type: "khác", icon: <IoMdOptions size={40} /> },
   ];
+
   return (
-    <div style={{ padding: "0 120px" }}>
-      <WrapperTypeProduct>
-        {arr.map((type) => {
+    <div
+      style={{ padding: "0 120px", display: "flex", justifyContent: "center" }}
+    >
+      <WrapperTypeProduct
+        style={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}
+      >
+        {arr.map(({ type, icon }) => {
+          const isSelected = filters.find(
+            (filter) => filter.key === "type" && filter.value === type
+          );
           return (
-            <Button
+            <TypeButton
               key={type}
-              type={
-                filters.find(
-                  (filter) => filter.key === "type" && filter.value === type
-                )
-                  ? "primary"
-                  : "default"
-              }
+              type={type}
+              icon={icon}
+              isSelected={!!isSelected}
               onClick={() => handleTypeFilter(type)}
-            >
-              {type}
-            </Button>
+            />
           );
         })}
       </WrapperTypeProduct>
