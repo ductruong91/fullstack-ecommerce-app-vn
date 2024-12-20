@@ -104,7 +104,7 @@ const ProductDetailComponent = (idProduct) => {
 
   const handleAddProducttoCart = (product) => {
     if (!user?.id) {
-      navigate("/sign-in", { state: location.pathname });
+      navigate("/signin", { state: location.pathname });
     } else {
       dispatch(
         addProductToCart({
@@ -120,15 +120,19 @@ const ProductDetailComponent = (idProduct) => {
   };
 
   const handleBuyProduct = (product) => {
-    dispatch(updateProduct(product));
-    dispatch(
-      addProductToCart({
-        product,
-        quantity: quantity ? quantity : 1,
-        cartOwnerID: user.id,
-      })
-    );
-    navigate("/checkout");
+    if (!user?.id) {
+      navigate("/signin", { state: location.pathname });
+    } else {
+      dispatch(updateProduct(product));
+      dispatch(
+        addProductToCart({
+          product,
+          quantity: quantity ? quantity : 1,
+          cartOwnerID: user.id,
+        })
+      );
+      navigate("/checkout");
+    }
   };
 
   const timeAgo = updatedAt

@@ -115,6 +115,9 @@ const ShoppingCart = () => {
   const shipping = 30000;
 
   const handleCheckout = async () => {
+    if (!user?.id) {
+      navigate("/sign-in");
+    }
     // Lọc sản phẩm được chọn
     const selectedProducts = products.filter((product) => product.checked);
     console.log("selectedProducts", selectedProducts);

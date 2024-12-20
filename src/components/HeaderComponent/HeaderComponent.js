@@ -74,13 +74,20 @@ const HeaderComponent = () => {
   };
 
   const handlePostProduct = () => {
-    navigate("/dang-tin");
+    if (!user?.id) {
+      navigate("/signin");
+    } else {
+      navigate("/dang-tin");
+    }
   };
 
   const handleHomePage = () => {
     navigate("/");
   };
   const handleCart = () => {
+    if (!user?.id) {
+      navigate("/signin");
+    }
     navigate("/cart");
   };
 

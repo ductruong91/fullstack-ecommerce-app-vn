@@ -64,12 +64,39 @@ const PostProductPage = () => {
     setPreviewOpen(true);
   };
 
-  const handleChange = ({ fileList: newFileList }) => {
+  // const handleChange = ({ fileList: newFileList }) => {
+  //   setFileList(newFileList);
+  //   const imageUrls = newFileList.map(
+  //     (file) => file.url || URL.createObjectURL(file.originFileObj)
+  //   );
+  //   setProductData({ ...productData, images: imageUrls });
+  // };
+
+  const handleChange = async ({ fileList: newFileList }) => {
+    // Cập nhật danh sách file
     setFileList(newFileList);
-    const imageUrls = newFileList.map(
-      (file) => file.url || URL.createObjectURL(file.originFileObj)
-    );
-    setProductData({ ...productData, images: imageUrls });
+
+    // Hàm chuyển file sang base64
+    const convertToBase64 = (file) =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result); // Chuỗi base64
+        reader.onerror = (error) => reject(error);
+      });
+
+    // Lấy danh sách base64 từ danh sách file
+    const imagePromises = newFileList.map(async (file) => {
+      const fileObj = file.originFileObj || file; // Nếu đã có base64 thì không cần chuyển
+      return await convertToBase64(fileObj);
+    });
+
+    try {
+      const imageBase64List = await Promise.all(imagePromises);
+      setProductData({ ...productData, images: imageBase64List });
+    } catch (error) {
+      console.error("Error converting images to base64:", error);
+    }
   };
 
   const mutation = useMutation({
@@ -100,9 +127,8 @@ const PostProductPage = () => {
       message.error("Vui lòng điền đầy đủ thông tin sản phẩm!");
       return;
     }
-   
+
     mutation.mutate(productData);
-    
   };
 
   const uploadButton = (
@@ -142,7 +168,7 @@ const PostProductPage = () => {
             onChange={handleChange}
             beforeUpload={() => false} // Tắt upload tự động
           >
-            {fileList.length >= 8 ? null : uploadButton}
+            {fileList.length >= 4 ? null : uploadButton}
           </Upload>
           {previewImage && (
             <Image

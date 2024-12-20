@@ -23,6 +23,7 @@ import * as ProductService from "../../service/ProductService";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { Button } from "antd";
+import FooterComponent from "../../components/FooterComponent/FooterComponent";
 const limit = 30;
 
 const HomePage = () => {
@@ -97,66 +98,66 @@ const HomePage = () => {
           margin: "0 auto",
         }}
       >
-        <div style={{
-         
-         
-          width: "60%",
-          margin: "0 auto",
-        }}>
+        <div
+          style={{
+            width: "60%",
+            margin: "0 auto",
+          }}
+        >
           <SliderComponent arrImages={[slider1, slider2, slider3]} />
 
           <WrapperNew>
-          <WrapperNewText>
-            <span>Tin dang moi</span>
-          </WrapperNewText>
+            <WrapperNewText>
+              <span>Tin dang moi</span>
+            </WrapperNewText>
 
-          <WrapperProduct>
-            {products
-              ?.filter((product) => product.userId !== user.id)
-              ?.map((product) => {
-                return (
-                  <CardComponent
-                    key={product._id}
-                    id={product._id}
-                    name={product.name}
-                    description={product.description}
-                    price={product.price}
-                    type={product.type}
-                    images={product.images}
-                    stock={product.stock}
-                    reviews={product.reviews}
-                    rating={product.rating}
-                    address={product.address}
-                    updatedAt={product.updatedAt}
-                  />
-                );
-              })}
-          </WrapperProduct>
-          <div
-            style={{
-              display: "flex",
-              margin: "10px",
-              justifyContent: "center",
-            }}
-          >
-            <div>
-              <ButtonComponent
-                textButton="xem them"
-                // type="outline"
-                onClick={handleLoadMore}
-                styleButton={{
-                  border: "1px solid rgb(11, 116, 229)",
-                  colors: "rgb(11, 116, 229)",
-                  width: "240px",
-                  height: "38px",
-                }}
-              />
+            <WrapperProduct>
+              {products
+                ?.filter((product) => product.userId !== user.id)
+                ?.map((product) => {
+                  return (
+                    <CardComponent
+                      key={product._id}
+                      id={product._id}
+                      name={product.name}
+                      description={product.description}
+                      price={product.price}
+                      type={product.type}
+                      images={product.images}
+                      stock={product.stock}
+                      reviews={product.reviews}
+                      rating={product.rating}
+                      address={product.address}
+                      updatedAt={product.updatedAt}
+                    />
+                  );
+                })}
+            </WrapperProduct>
+            <div
+              style={{
+                display: "flex",
+                margin: "10px",
+                justifyContent: "center",
+              }}
+            >
+              <div>
+                <ButtonComponent
+                  textButton="xem them"
+                  // type="outline"
+                  onClick={handleLoadMore}
+                  styleButton={{
+                    border: "1px solid rgb(11, 116, 229)",
+                    colors: "rgb(11, 116, 229)",
+                    width: "240px",
+                    height: "38px",
+                  }}
+                />
+              </div>
             </div>
-          </div>
-
           </WrapperNew>
           {/* <NavbarComponent /> */}
         </div>
+        <FooterComponent />
       </div>
     </>
   );

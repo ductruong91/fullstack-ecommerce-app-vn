@@ -8,7 +8,7 @@ import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Icon mắt
 import InputForm from "../../components/InputForm/InputFrom";
 import { useMutation } from "@tanstack/react-query";
@@ -22,6 +22,7 @@ const SignInPage = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [password, setPassword] = useState(""); // Trạng thái mật khẩu
   const [email, setEmail] = useState("");
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const mutation = useMutation({
@@ -65,6 +66,7 @@ const SignInPage = () => {
   const handleClickSignIp = () => {
     mutation.mutate({ email, password });
     console.log("in:", email, password);
+    navigate(location.pathname  , { replace: true });
   };
   const navigate = useNavigate();
   const handleNavigateSignUp = () => {
