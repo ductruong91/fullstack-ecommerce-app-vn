@@ -8,6 +8,7 @@ import {
   Button,
   Modal,
   Input,
+  Radio,
 } from "antd";
 import { DeleteOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +16,7 @@ import { removeLastProduct } from "../../redux/slides/cartSlide";
 import * as OrderService from "../../service/OrderService";
 import * as ProductService from "../../service/ProductService";
 import { useNavigate } from "react-router-dom";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -71,9 +73,9 @@ const ProductPayPage = () => {
   const cart = useSelector((state) => state.cart);
   const currentProduct = useSelector((state) => state.product);
   const user = useSelector((state) => state.user);
-
   const [products, setProducts] = useState([]); // chỉ có tác dụng để in
-
+  const [paymentMethod, setPaymentMethod] = useState(null); //trang thái chọn loại thanh toán
+  let quantityOnPay;
   console.log("cart hien tai", cart);
 
   useEffect(() => {
@@ -83,6 +85,7 @@ const ProductPayPage = () => {
       quantity: quantity,
       checked: true,
     };
+    quantityOnPay = quantity;
     setProducts((prevProducts) => [updatedProduct, ...prevProducts]);
     dispatch(removeLastProduct());
   }, []);
@@ -141,11 +144,11 @@ const ProductPayPage = () => {
         name: user.name,
         phone: user.phone,
       },
-      paymentMethod: "tra sau",
+      paymentMethod: paymentMethod,
       shippingPrice: shipping,
       taxPrice: 0,
       totalPrice: total,
-      isPaid: false,
+      isPaid: paymentMethod === "COD" ? false : true,
       paidAt: "",
       isDelivered: false,
       deliveredAt: "",
@@ -167,7 +170,7 @@ const ProductPayPage = () => {
       });
     }
 
-    alert("Thanh toán thành công!");
+    // alert("Thanh toán thành công!");
     navigate("/");
   };
 
@@ -188,6 +191,25 @@ const ProductPayPage = () => {
     setIsModalVisible(false); // Đóng form mà không cập nhật
   };
 
+  const handleApprove = (data, actions) => {
+    return actions.order.capture().then((details) => {
+      // Xử lý thông tin giao dịch sau khi thanh toán thành công
+      console.log("Thanh toán thành công!", details);
+
+      // Ví dụ: bạn có thể hiển thị thông báo hoặc lưu thông tin giao dịch vào cơ sở dữ liệu
+      alert(
+        `Thanh toán thành công! Chào mừng, ${details.payer.name.given_name}`
+      );
+      handleCheckout();
+
+      // Gọi API để lưu thông tin giao dịch vào cơ sở dữ liệu (nếu cần)
+      // ví dụ: savePaymentDetails(details);
+    });
+  };
+
+  const handlePaymentMethodChange = (method) => {
+    setPaymentMethod(method);
+  };
   return (
     <Layout style={{ padding: "20px", height: "100vh" }}>
       <Content
@@ -281,6 +303,23 @@ const ProductPayPage = () => {
             <Text>Phí giao hàng:</Text>
             <Text>{total > 0 ? shipping : 0} VND</Text>
           </div>
+
+          {/* Chọn lựa chọn thanh toán */}
+          <div style={{ marginBottom: "20px" }}>
+            <Radio.Group
+              onChange={(e) => setPaymentMethod(e.target.value)} // Cập nhật lựa chọn thanh toán
+              value={paymentMethod}
+              style={{ justifyContent: "flex-start" }}
+            >
+              <Radio value="COD">Thanh toán khi nhận hàng</Radio>{" "}
+              {/* Thanh toán khi nhận hàng */}
+              <Radio value="PayPal" style={{ marginLeft: "10px" }}>
+                Thanh toán qua PayPal
+              </Radio>{" "}
+              {/* Thanh toán qua PayPal */}
+            </Radio.Group>
+          </div>
+
           <Divider />
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Title level={4}>Tổng cộng:</Title>
@@ -288,7 +327,7 @@ const ProductPayPage = () => {
           </div>
 
           {/* Nút mua hàng */}
-          <Button
+          {/* <Button
             type="primary"
             block
             style={{ marginTop: "10px" }}
@@ -296,7 +335,45 @@ const ProductPayPage = () => {
             disabled={total === 0}
           >
             Mua hàng
-          </Button>
+          </Button> */}
+          {/* 
+          <PayPalScriptProvider options={{ clientId: "test" }}>
+            <PayPalButtons
+              style={{ layout: "horizontal" }}
+              onApprove={handleApprove} // Thêm hàm handleApprove vào đây
+              onError={(err) => {
+                // Xử lý lỗi nếu có
+                console.error("Có lỗi xảy ra trong quá trình thanh toán", err);
+                alert("Thanh toán không thành công! Vui lòng thử lại.");
+              }}
+            />
+          </PayPalScriptProvider> */}
+          {paymentMethod === "COD" ? (
+            <Button
+              type="primary"
+              block
+              style={{ marginTop: "10px" }}
+              onClick={handleCheckout}
+              disabled={total === 0}
+            >
+              Mua hàng (Thanh toán khi nhận hàng)
+            </Button>
+          ) : paymentMethod === "PayPal" ? (
+            <PayPalScriptProvider options={{ clientId: "test" }}>
+              <PayPalButtons
+                style={{ layout: "horizontal" }}
+                onApprove={handleApprove} // Thêm hàm handleApprove vào đây
+                onError={(err) => {
+                  // Xử lý lỗi nếu có
+                  console.error(
+                    "Có lỗi xảy ra trong quá trình thanh toán",
+                    err
+                  );
+                  alert("Thanh toán không thành công! Vui lòng thử lại.");
+                }}
+              />
+            </PayPalScriptProvider>
+          ) : null}
         </div>
       </Content>
     </Layout>

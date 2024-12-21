@@ -1,11 +1,14 @@
 import { Badge, Button, Col, Popover } from "antd";
 import React, { useEffect, useState } from "react";
 import {
+  LogoImage,
+  LogoWrapper,
   WrappeHeader,
   WrapperContent,
   WrapperHeaderAccount,
   WrapperIconAccount,
   WrapperIconCart,
+  WrapperImage,
   WrapperListPostsIcon,
   WrapperTextHeader,
   WrapperTextHeaderSmall,
@@ -35,6 +38,7 @@ import {
   removeFilter,
   setFilter,
 } from "../../redux/slides/filterSlide";
+import logo from "../../assets/images/Screenshot 2024-12-21 131501.png";
 
 const onSearch = (value, _e, info) => console.log(info?.source, value);
 
@@ -45,6 +49,8 @@ const HeaderComponent = () => {
 
   const filters = useSelector((state) => state.filter.filters); // Lấy filter từ Redux
   const [searchText, setSearchText] = useState("");
+  const cart = useSelector((state) => state.cart);
+  let NumberOfProducts = cart.products.length;
 
   const handleSearch = () => {
     if (searchText) {
@@ -104,11 +110,17 @@ const HeaderComponent = () => {
       <WrapperContent onClick={handleLogout}>đăng xuất</WrapperContent>
     </div>
   );
+
   return (
     <div>
       <WrappeHeader gutter={10}>
         <Col span={5}>
-          <WrapperTextHeader onClick={handleHomePage}>bkE</WrapperTextHeader>
+          <LogoWrapper onClick={handleHomePage}>
+            {" "}
+            <WrapperImage onClick={handleHomePage}>
+              <LogoImage src={logo} alt="Logo" />
+            </WrapperImage>
+          </LogoWrapper>
         </Col>
 
         <Col span={11}>
@@ -154,7 +166,7 @@ const HeaderComponent = () => {
         >
           <div>
             <WrapperIconCart>
-              <Badge count={4}>
+              <Badge count={NumberOfProducts}>
                 <LocalMallIcon
                   style={{ fontSize: "40px" }}
                   onClick={handleCart}

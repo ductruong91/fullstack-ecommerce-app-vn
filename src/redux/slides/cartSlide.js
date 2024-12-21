@@ -19,10 +19,20 @@ export const cartSlice = createSlice({
         name = "",
         images = [],
         stock = 0,
+        type = "",
       } = action.payload.product;
       const quantity = action.payload.quantity;
       state.userId = action.payload.cartOwnerID;
-      state.products.push({ _id, quantity, price, name, images, userId , stock});
+      state.products.push({
+        _id,
+        quantity,
+        price,
+        name,
+        images,
+        userId,
+        stock,
+        type,
+      });
       console.log("chu gio hang", state.userId);
     },
     removeLastProduct: (state) => {

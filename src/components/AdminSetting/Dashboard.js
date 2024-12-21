@@ -44,28 +44,30 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  // Dữ liệu cho biểu đồ stacking
-  const processOrderData = () => {
-    const monthlyData = {}; // { Jan: { completed: 5, pending: 10 } }
+  // Dữ liệu cho biểu đồ stacking theo ngày
+  const processOrderDataDaily = () => {
+    const dailyData = {}; // { "2024-12-21": { completed: 5, pending: 10 } }
 
     orderData.forEach((order) => {
       const createdAt = new Date(order.createdAt);
-      const month = `${createdAt.getFullYear()}-${createdAt.getMonth() + 1}`;
+      const day = `${createdAt.getFullYear()}-${(createdAt.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${createdAt.getDate().toString().padStart(2, "0")}`;
 
-      if (!monthlyData[month]) {
-        monthlyData[month] = { completed: 0, pending: 0 };
+      if (!dailyData[day]) {
+        dailyData[day] = { completed: 0, pending: 0 };
       }
 
       if (order.status === "completed") {
-        monthlyData[month].completed++;
+        dailyData[day].completed++;
       } else {
-        monthlyData[month].pending++;
+        dailyData[day].pending++;
       }
     });
 
-    const labels = Object.keys(monthlyData).sort(); // Các tháng
-    const completedData = labels.map((month) => monthlyData[month].completed);
-    const pendingData = labels.map((month) => monthlyData[month].pending);
+    const labels = Object.keys(dailyData).sort(); // Các ngày
+    const completedData = labels.map((day) => dailyData[day].completed);
+    const pendingData = labels.map((day) => dailyData[day].pending);
 
     return {
       labels,
@@ -114,6 +116,117 @@ const Dashboard = () => {
     };
   };
 
+  // Dữ liệu cho biểu đồ cột tỉ lệ hoàn thành, pending và canceled theo loại sản phẩm
+  const processCompletionRateByProductType = () => {
+    const statusCounts = {}; // { "Type A": { completed: 5, pending: 3, canceled: 2, total: 10 } }
+    let totalOrders = 0; // Tổng số đơn hàng toàn hệ thống
+
+    // Đếm số lượng đơn hàng theo trạng thái và theo loại sản phẩm
+    orderData.forEach((order) => {
+      order.products.forEach((product) => {
+        const type = product.type || "Unknown";
+
+        if (!statusCounts[type]) {
+          statusCounts[type] = {
+            completed: 0,
+            pending: 0,
+            canceled: 0,
+            total: 0,
+          };
+        }
+
+        statusCounts[type].total++;
+
+        if (order.status === "completed") {
+          statusCounts[type].completed++;
+        } else if (order.status === "pending") {
+          statusCounts[type].pending++;
+        } else if (order.status === "cancelled") {
+          statusCounts[type].canceled++;
+        }
+
+        totalOrders++; // Cộng tổng số đơn hàng
+      });
+    });
+
+    // Tính tỉ lệ cho mỗi trạng thái
+    const labels = Object.keys(statusCounts);
+    const completedData = labels.map(
+      (type) => (statusCounts[type].completed / statusCounts[type].total) * 100
+    );
+    const pendingData = labels.map(
+      (type) => (statusCounts[type].pending / statusCounts[type].total) * 100
+    );
+    const canceledData = labels.map(
+      (type) => (statusCounts[type].canceled / statusCounts[type].total) * 100
+    );
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: "Tỉ lệ hoàn thành (%)",
+          data: completedData,
+          backgroundColor: "rgba(75, 192, 192, 0.6)",
+        },
+        {
+          label: "Tỉ lệ đang xử lý (%)",
+          data: pendingData,
+          backgroundColor: "rgba(153, 102, 255, 0.6)",
+        },
+        {
+          label: "Tỉ lệ hủy (%)",
+          data: canceledData,
+          backgroundColor: "rgba(255, 99, 132, 0.6)",
+        },
+      ],
+    };
+  };
+
+  // Dữ liệu cho tổng giao dịch theo từng loại sản phẩm
+  const processTotalTransactionByProductType = () => {
+    const totalTransactions = {}; // { "Type A": 1000, "Type B": 500 }
+
+    orderData.forEach((order) => {
+      order.products.forEach((product) => {
+        const type = product.type || "Unknown";
+        const totalPrice = order.totalPrice || 0; // Giả sử order có trường totalPrice
+
+        // if (type === "Unknown") {
+        //   console.log("order lỗi:", order);
+        // }
+
+        if (!totalTransactions[type]) {
+          totalTransactions[type] = 0;
+        }
+
+        totalTransactions[type] += totalPrice;
+      });
+    });
+
+    const labels = Object.keys(totalTransactions);
+    const data = labels.map((type) => totalTransactions[type]);
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: "Tổng giao dịch (VND)",
+          data,
+          backgroundColor: "rgba(153, 102, 255, 0.6)",
+        },
+      ],
+    };
+  };
+
+  // Tính tổng giao dịch (cộng tổng giá trị của tất cả đơn hàng hoàn thành)
+  const totalTransactions = orderData.reduce((sum, order) => {
+    if (order.status === "completed") {
+      sum += order.totalPrice || 0; // Giả sử order có trường totalPrice
+    }
+    return sum;
+  }, 0);
+
   return (
     <Box p={4}>
       <Typography variant="h4" gutterBottom>
@@ -126,7 +239,23 @@ const Dashboard = () => {
             <Typography variant="h6" gutterBottom>
               Số lượng đơn hàng theo thời gian
             </Typography>
-            <Bar data={processOrderData()} options={{ responsive: true }} />
+            <Bar
+              data={processOrderDataDaily()}
+              options={{ responsive: true }}
+            />
+          </Box>
+        </Grid>
+
+        {/* Biểu đồ cột tỉ lệ hoàn thành, pending và canceled theo loại sản phẩm */}
+        <Grid item xs={12} md={6}>
+          <Box p={2} boxShadow={2} borderRadius={2}>
+            <Typography variant="h6" gutterBottom>
+              Tỉ lệ hoàn thành, đang xử lý và hủy theo loại sản phẩm
+            </Typography>
+            <Bar
+              data={processCompletionRateByProductType()}
+              options={{ responsive: true }}
+            />
           </Box>
         </Grid>
 
@@ -137,6 +266,31 @@ const Dashboard = () => {
               Tỷ lệ các loại sản phẩm
             </Typography>
             <Pie data={processProductData()} options={{ responsive: true }} />
+          </Box>
+        </Grid>
+
+        {/* Biểu đồ tổng giao dịch theo loại sản phẩm */}
+        <Grid item xs={12} md={6}>
+          <Box p={2} boxShadow={2} borderRadius={2}>
+            <Typography variant="h6" gutterBottom>
+              Tổng giao dịch theo loại sản phẩm
+            </Typography>
+            <Bar
+              data={processTotalTransactionByProductType()}
+              options={{ responsive: true }}
+            />
+          </Box>
+        </Grid>
+
+        {/* Tổng giao dịch */}
+        <Grid item xs={12}>
+          <Box p={2} boxShadow={2} borderRadius={2}>
+            <Typography variant="h6" gutterBottom>
+              Tổng giao dịch hoàn thành (VND)
+            </Typography>
+            <Typography variant="h5">
+              {totalTransactions.toLocaleString()} VND
+            </Typography>
           </Box>
         </Grid>
       </Grid>

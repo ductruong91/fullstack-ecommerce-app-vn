@@ -31,6 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { addProductToCart } from "../../redux/slides/cartSlide";
 import { updateProduct } from "../../redux/slides/productSlide";
+import LikeButtonComponent from "../likeFbButtonComponent/likeButtonComponent";
 
 const ProductDetailComponent = (idProduct) => {
   const onChange = (value) => {
@@ -200,6 +201,10 @@ const ProductDetailComponent = (idProduct) => {
                 <WrapperTextTimePost>{timeAgo}truoc</WrapperTextTimePost>
               </WrapperTimePost>
 
+              <LikeButtonComponent
+                dataHref={"https://developers.facebook.com/docs/plugins/"}
+              />
+
               <WrapperUser>
                 <WrapperUserImage
                   src={owner?.avatar || "https://via.placeholder.com/50"}
@@ -281,6 +286,13 @@ const ProductDetailComponent = (idProduct) => {
           <WrapperQualityNumber>mô tả sản phẩm:</WrapperQualityNumber>
           <WrapperTextLocation>{description}</WrapperTextLocation>
         </div>
+
+        <div
+          class="fb-comments"
+          data-href="https://developers.facebook.com/docs/plugins/comments#configurator"
+          data-width=""
+          data-numposts="5"
+        ></div>
       </div>
     </>
   );
