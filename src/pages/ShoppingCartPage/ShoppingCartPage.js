@@ -182,13 +182,13 @@ const ShoppingCart = () => {
       );
 
       if (product.quantity === productGetFromServer.data.stock) {
-        // await ProductService.deleteProduct(product._id);
+        await ProductService.deleteProduct(product._id);
       } else {
         const updatedProduct = {
           ...productGetFromServer.data,
           stock: productGetFromServer.data.stock - product.quantity,
         };
-        // await ProductService.updateProduct(product._id, updatedProduct);
+        await ProductService.updateProduct(product._id, updatedProduct);
       }
     }
 
